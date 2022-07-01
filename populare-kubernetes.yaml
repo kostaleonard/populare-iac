@@ -6,8 +6,19 @@ metadata:
     app: populare
 spec:
   containers:
-  - image: kostaleonard/populare-db-proxy:0.0.2
+  - image: kostaleonard/populare_db_proxy:0.0.2
     name: populare-db-proxy
     ports:
     - containerPort: 8000
       protocol: TCP
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: populare-db-proxy
+spec:
+  ports:
+  - port: 80
+    targetPort: 8000
+  selector:
+    app: populare
