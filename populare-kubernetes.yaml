@@ -4,6 +4,7 @@ metadata:
   name: populare-db-proxy
 spec:
   replicas: 1
+  minReadySeconds: 10
   selector:
     matchLabels:
       app: populare-db-proxy
@@ -14,11 +15,21 @@ spec:
         app: populare-db-proxy
     spec:
       containers:
-      - image: kostaleonard/populare_db_proxy:0.0.2
+      - image: kostaleonard/populare_db_proxy:0.0.3
         name: populare-db-proxy
         ports:
         - containerPort: 8000
           protocol: TCP
+        readinessProbe:
+          periodSeconds: 1
+          httpGet:
+            path: /health
+            port: 8000
+        livenessProbe:
+          httpGet:
+            path: /health
+            port: 8000
+          initialDelaySeconds: 15
 ---
 apiVersion: v1
 kind: Service
