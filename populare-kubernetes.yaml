@@ -15,11 +15,15 @@ spec:
         app: populare-db-proxy
     spec:
       containers:
-      - image: kostaleonard/populare_db_proxy:0.0.3
+      - image: kostaleonard/populare_db_proxy:0.0.5
         name: populare-db-proxy
         ports:
         - containerPort: 8000
           protocol: TCP
+        volumeMounts:
+        - name: db-certs
+          mountPath: /etc/populare-db-proxy/db-certs/
+          readOnly: true
         readinessProbe:
           periodSeconds: 1
           httpGet:
@@ -30,6 +34,10 @@ spec:
             path: /health
             port: 8000
           initialDelaySeconds: 15
+      volumes:
+      - name: db-certs
+        secret:
+          secretName: db-certs
 ---
 apiVersion: v1
 kind: Service
