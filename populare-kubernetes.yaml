@@ -94,3 +94,25 @@ spec:
     targetPort: 8000
   selector:
     app: populare-db-proxy
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: mock-client
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: mock-client
+  template:
+    metadata:
+      name: mock-client
+      labels:
+        app: mock-client
+    spec:
+      containers:
+        - image: yauritux/busybox-curl
+          name: mock-client
+          args:
+            - sleep
+            - "1000000"
