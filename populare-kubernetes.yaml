@@ -1,6 +1,39 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
+  name: populare
+spec:
+  replicas: 1
+  minReadySeconds: 10
+  selector:
+    matchLabels:
+      app: populare
+  template:
+    metadata:
+      name: populare
+      labels:
+        app: populare
+    spec:
+      containers:
+        - image: kostaleonard/populare-offline:1.0.5
+          name: populare
+          ports:
+            - containerPort: 80
+              protocol: TCP
+          readinessProbe:
+            periodSeconds: 1
+            httpGet:
+              path: /version.json
+              port: 80
+          livenessProbe:
+            httpGet:
+              path: /version.json
+              port: 80
+            initialDelaySeconds: 15
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
   name: populare-db-proxy
 spec:
   replicas: 1
@@ -15,7 +48,7 @@ spec:
         app: populare-db-proxy
     spec:
       containers:
-      - image: kostaleonard/populare_db_proxy:0.0.5
+      - image: kostaleonard/populare_db_proxy:0.0.8
         name: populare-db-proxy
         ports:
         - containerPort: 8000
