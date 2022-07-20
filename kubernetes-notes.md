@@ -22,3 +22,14 @@ This may be a minikube issue. Instead, connect through the mock client.
 ```bash
 kubectl exec mock-client-<suffix> -- curl -s populare
 ```
+
+## Open populare web app in browser using minikube
+
+```bash
+minikube service populare
+```
+
+This is a shortcut that opens a browser window to the minikube node's IP
+address and populare service's nodeport. You could also get minikube's IP
+address with `minikube ip` and the nodeport with `kubectl get svc populare`,
+then navigate to that IP/port in your browser.

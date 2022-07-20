@@ -15,7 +15,7 @@ spec:
         app: populare
     spec:
       containers:
-        - image: kostaleonard/populare-offline:1.0.5
+        - image: kostaleonard/populare:testv0.0.10
           name: populare
           ports:
             - containerPort: 80
@@ -94,6 +94,44 @@ spec:
     targetPort: 8000
   selector:
     app: populare-db-proxy
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: reverse-proxy
+spec:
+  replicas: 1
+  minReadySeconds: 10
+  selector:
+    matchLabels:
+      app: reverse-proxy
+  template:
+    metadata:
+      name: reverse-proxy
+      labels:
+        app: reverse-proxy
+    spec:
+      containers:
+        - image: kostaleonard/populare-reverse-proxy
+          # TODO remove imagePullPolicy
+          imagePullPolicy: Always
+          name: reverse-proxy
+          ports:
+            - containerPort: 80
+              protocol: TCP
+# TODO if this works, add probes
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: reverse-proxy
+spec:
+  type: NodePort
+  ports:
+    - port: 80
+      targetPort: 80
+  selector:
+    app: reverse-proxy
 ---
 apiVersion: apps/v1
 kind: Deployment
