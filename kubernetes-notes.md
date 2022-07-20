@@ -14,10 +14,11 @@ kubectl apply -f populare-kubernetes.yaml
 kubectl exec populare-<suffix> -- curl -s populare-db-proxy/health
 ```
 
-## Check connection to populare service
+## Check connection to service within cluster
 
-**Note: you can't connect to the populare service from a populare container.**
-This may be a minikube issue. Instead, connect through the mock client.
+**Note: you can't connect to a service from a container backing that service.**
+This may be a minikube issue, but appears to be well-known. Instead, connect
+through the mock client.
 
 ```bash
 kubectl exec mock-client-<suffix> -- curl -s populare
@@ -26,10 +27,10 @@ kubectl exec mock-client-<suffix> -- curl -s populare
 ## Open populare web app in browser using minikube
 
 ```bash
-minikube service populare
+minikube service reverse-proxy
 ```
 
 This is a shortcut that opens a browser window to the minikube node's IP
-address and populare service's nodeport. You could also get minikube's IP
-address with `minikube ip` and the nodeport with `kubectl get svc populare`,
-then navigate to that IP/port in your browser.
+address and the reverse-proxy service's nodeport. You could also get minikube's
+IP address with `minikube ip` and the nodeport with
+`kubectl get svc reverse-proxy`, then navigate to that IP/port in your browser.
