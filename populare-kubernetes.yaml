@@ -21,10 +21,10 @@ spec:
             - containerPort: 80
               protocol: TCP
           readinessProbe:
-            periodSeconds: 1
             httpGet:
               path: /version.json
               port: 80
+            periodSeconds: 1
           livenessProbe:
             httpGet:
               path: /version.json
@@ -69,10 +69,10 @@ spec:
           mountPath: /etc/populare-db-proxy/db-certs/
           readOnly: true
         readinessProbe:
-          periodSeconds: 1
           httpGet:
             path: /health
             port: 8000
+          periodSeconds: 1
         livenessProbe:
           httpGet:
             path: /health
@@ -111,12 +111,21 @@ spec:
         app: reverse-proxy
     spec:
       containers:
-        - image: kostaleonard/populare-reverse-proxy:0.0.1
+        - image: kostaleonard/populare-reverse-proxy:0.0.2
           name: reverse-proxy
           ports:
             - containerPort: 80
               protocol: TCP
-# TODO if this works, add probes
+          readinessProbe:
+            httpGet:
+              path: /health
+              port: 80
+            periodSeconds: 1
+          livenessProbe:
+            httpGet:
+              path: /health
+              port: 80
+            initialDelaySeconds: 15
 ---
 apiVersion: v1
 kind: Service
@@ -151,3 +160,16 @@ spec:
           args:
             - sleep
             - "1000000"
+          readinessProbe:
+            exec:
+              command:
+                - echo
+                - ok
+            periodSeconds: 5
+          livenessProbe:
+            exec:
+              command:
+                - echo
+                - ok
+            periodSeconds: 5
+            initialDelaySeconds: 15
