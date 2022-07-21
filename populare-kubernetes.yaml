@@ -15,7 +15,7 @@ spec:
         app: populare
     spec:
       containers:
-        - image: kostaleonard/populare:1.0.6
+        - image: kostaleonard/populare:1.0.7
           name: populare
           ports:
             - containerPort: 80
