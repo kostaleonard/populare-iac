@@ -111,8 +111,7 @@ spec:
         app: reverse-proxy
     spec:
       containers:
-        - image: kostaleonard/populare-reverse-proxy
-          # TODO this should not be latest
+        - image: kostaleonard/populare-reverse-proxy:0.0.1
           name: reverse-proxy
           ports:
             - containerPort: 80
