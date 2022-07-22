@@ -15,7 +15,7 @@ spec:
         app: populare
     spec:
       containers:
-        - image: kostaleonard/populare:1.0.7
+        - image: kostaleonard/populare-offline:1.0.7 # TODO turn online
           name: populare
           ports:
             - containerPort: 80
