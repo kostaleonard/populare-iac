@@ -15,7 +15,7 @@ spec:
         app: populare
     spec:
       containers:
-        - image: kostaleonard/populare-offline:1.0.7 # TODO turn online
+        - image: kostaleonard/populare:1.0.7
           name: populare
           ports:
             - containerPort: 80
@@ -132,7 +132,7 @@ kind: Service
 metadata:
   name: reverse-proxy
 spec:
-  type: NodePort
+  type: LoadBalancer
   ports:
     - port: 80
       targetPort: 80
