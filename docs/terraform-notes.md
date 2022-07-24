@@ -8,12 +8,10 @@ Terraform allows us to build infrastructure as code.
 for the minimum required IAM policies.
 2. Apply the terraform plan. Provide the database username and password values
 (they can also be supplied as environment variables if working in CI/CD or some
-other automated workflow). These will be stored as part of the database
-connection URI secret in kubernetes, and will be mounted into populare-db-proxy
-pods; you need not know the values yourself.
+other automated workflow).
 
    ```bash
-   terraform apply -var="db_username=<your-value>" -var="db_password=<your-secret-value>"
+   terraform apply -var="db_username=<db-username>" -var="db_password=<db-password>"
    ```
 
 3. Update the kubeconfig so that `kubectl` links to the cluster.
@@ -22,19 +20,28 @@ pods; you need not know the values yourself.
    aws eks --region us-east-2 update-kubeconfig --name populare-cluster
    ```
 
-4. Apply the kubernetes configuration.
+4. Create the database connection secret. Because you cannot have providers
+that depend on each other, terraform [recommends](https://github.com/hashicorp/terraform-provider-kubernetes/blob/main/_examples/eks/README.md)
+creating two separate plans for the EKS and Kubernetes providers. For now, we
+will create the secret ourselves.
+
+   ```bash
+   kubectl create secret generic db-certs --from-literal=db-uri=mysql+pymysql://<db-username>:<db-password>@$(terraform output -raw rds_hostname)/populare_db
+   ```
+
+5. Apply the kubernetes configuration.
 
    ```bash
    kubectl apply -f populare-kubernetes.yaml
    ```
 
-5. Browse to the app. You can find the URL using the following.
+6. Browse to the app. You can find the URL using the following.
 
    ```bash
    kubectl get svc reverse-proxy
    ```
 
-6. Destroy provisioned infrastructure. As discussed in [this terraform PR](https://github.com/hashicorp/terraform/pull/29291),
+7. Destroy provisioned infrastructure. As discussed in [this terraform PR](https://github.com/hashicorp/terraform/pull/29291),
 all variables must be defined even for destroy actions; they are not used.
 
    ```bash
