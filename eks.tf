@@ -8,6 +8,18 @@ module "eks" {
   vpc_id     = module.vpc.vpc_id
   subnet_ids = module.vpc.public_subnets
 
+  node_security_group_additional_rules = {
+    egress_sql = {
+      description      = "Node to SQL"
+      protocol         = "tcp"
+      from_port        = 3306
+      to_port          = 3306
+      type             = "egress"
+      cidr_blocks      = ["0.0.0.0/0"]
+      ipv6_cidr_blocks = ["::/0"]
+    }
+  }
+
   eks_managed_node_groups = {
     populare-node-group = {
       desired_capacity = 1

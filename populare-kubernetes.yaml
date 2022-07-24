@@ -59,7 +59,7 @@ spec:
         app: populare-db-proxy
     spec:
       containers:
-      - image: kostaleonard/populare_db_proxy:0.0.8
+      - image: kostaleonard/populare_db_proxy:0.0.9
         name: populare-db-proxy
         ports:
         - containerPort: 8000
