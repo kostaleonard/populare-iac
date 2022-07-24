@@ -1,3 +1,8 @@
+variable "cluster_name" {
+  type = string
+  default = "populare-cluster"
+}
+
 variable "db_username" {
   description = "Database administrator username"
   type        = string
