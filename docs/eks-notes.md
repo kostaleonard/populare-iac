@@ -1,5 +1,9 @@
 # EKS notes
 
+**Note: Direct use of EKS without terraform is deprecated because it requires
+too much manual intervention. It was only ever a stop-gap until we added
+terraform; please see [terraform-notes.md](terraform-notes.md).**
+
 Elastic Kubernetes Service (EKS) is Amazon's managed Kubernetes service. We use
 terraform to create our AWS infrastructure, but for testing purposes we can
 also create a cluster in the AWS console or from the command line using
@@ -17,6 +21,15 @@ also create a cluster in the AWS console or from the command line using
 
    ```bash
    eksctl create cluster --name populare-cluster-7 --region us-east-2 --node-type t2.micro --nodes 4
+   ```
+
+4. Create database connection string secret. You can provision an RDS instance
+and use its database username, password, and URI for the connection string, or
+you can use a local file as the database, as shown below. You will not be able
+to scale the populare-db-proxy containers above 1 if you do the latter.
+
+   ```bash
+   kubectl create secret generic db-certs --from-literal=db-uri=sqlite:////tmp/populare_rds.db
    ```
 
 5. Manage cluster with `kubectl`.

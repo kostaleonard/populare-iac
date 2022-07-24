@@ -34,7 +34,7 @@ custom policies listed below.
 
 ### RDS
 
-TODO
+* AmazonRDSFullAccess (AWS Managed Policy)
 
 ## IAM and Terraform
 
@@ -58,6 +58,7 @@ used the latter approach with only 3 iterations.
 ### Policies required for this project's plan
 
 * AmazonEC2FullAccess (AWS Managed Policy)
+* AmazonRDSFullAccess (AWS Managed Policy)
 * AWSCloudFormationFullAccess (AWS Managed Policy)
 * CloudWatchFullAccess (AWS Managed Policy)
 * EksAllAccess (custom policy, linked in the [eksctl documentation](https://eksctl.io/usage/minimum-iam-policies/))
