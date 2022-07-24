@@ -68,7 +68,7 @@ used the latter approach with only 3 iterations.
 
 Note that you will need to replace your AWS account ID with the 12-digit number
 used in the "Resource" section. AWS account IDs are not sensitive information
-[according to Amazon]((https://docs.aws.amazon.com/general/latest/gr/acct-identifiers.html)).
+[according to Amazon](https://docs.aws.amazon.com/general/latest/gr/acct-identifiers.html).
 
 ```json
 {

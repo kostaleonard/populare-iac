@@ -23,3 +23,9 @@ for the minimum required IAM policies.
    ```bash
    kubectl apply -f populare-kubernetes.yaml
    ```
+
+5. Destroy provisioned infrastructure.
+
+   ```bash
+   terraform destroy
+   ```
