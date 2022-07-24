@@ -5,16 +5,6 @@ module "eks" {
   cluster_name    = "populare-cluster"
   cluster_version = "1.22"
 
-#  cluster_addons = {
-#    coredns = {
-#      resolve_conflicts = "OVERWRITE"
-#    }
-#    kube-proxy = {}
-#    vpc-cni = {
-#      resolve_conflicts = "OVERWRITE"
-#    }
-#  }
-
   vpc_id     = module.vpc.vpc_id
   subnet_ids = module.vpc.public_subnets
 
