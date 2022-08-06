@@ -14,6 +14,7 @@ resource "kubernetes_manifest" "populare-deployment" {
     "kind" = "Deployment"
     "metadata" = {
       "name" = "populare"
+      "namespace" = "default"
     }
     "spec" = {
       "minReadySeconds" = 10
@@ -69,6 +70,7 @@ resource "kubernetes_manifest" "populare-service" {
     "kind" = "Service"
     "metadata" = {
       "name" = "populare"
+      "namespace" = "default"
     }
     "spec" = {
       "ports" = [
@@ -90,6 +92,7 @@ resource "kubernetes_manifest" "populare-db-proxy-deployment" {
     "kind" = "Deployment"
     "metadata" = {
       "name" = "populare-db-proxy"
+      "namespace" = "default"
     }
     "spec" = {
       "minReadySeconds" = 10
@@ -160,6 +163,7 @@ resource "kubernetes_manifest" "populare-db-proxy-service" {
     "kind" = "Service"
     "metadata" = {
       "name" = "populare-db-proxy"
+      "namespace" = "default"
     }
     "spec" = {
       "ports" = [
@@ -181,6 +185,7 @@ resource "kubernetes_manifest" "reverse-proxy-deployment" {
     "kind" = "Deployment"
     "metadata" = {
       "name" = "reverse-proxy"
+      "namespace" = "default"
     }
     "spec" = {
       "minReadySeconds" = 10
@@ -236,6 +241,7 @@ resource "kubernetes_manifest" "reverse-proxy-service" {
     "kind" = "Service"
     "metadata" = {
       "name" = "reverse-proxy"
+      "namespace" = "default"
     }
     "spec" = {
       "ports" = [

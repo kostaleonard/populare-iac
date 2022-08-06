@@ -2,7 +2,7 @@ terraform {
   cloud {
     organization = "kosta-mlops"
     workspaces {
-      name = "populare"
+      name = "populare-kubernetes"
     }
   }
   required_providers {
