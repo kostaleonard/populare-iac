@@ -35,13 +35,3 @@ module "eks" {
     Terraform   = "true"
   }
 }
-
-#resource "kubernetes_secret" "db-certs" {
-#  metadata {
-#    name = "db-certs"
-#  }
-#
-#  data = {
-#    db-uri = "mysql+pymysql://${var.db_username}:${var.db_password}@${aws_db_instance.populare.address}/${aws_db_instance.populare.db_name}"
-#  }
-#}

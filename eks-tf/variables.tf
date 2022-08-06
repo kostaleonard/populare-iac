@@ -1,6 +1,7 @@
 variable "cluster_name" {
-  type    = string
-  default = "populare-cluster"
+  description = "EKS cluster name"
+  type        = string
+  default     = "populare-cluster"
 }
 
 variable "db_username" {
