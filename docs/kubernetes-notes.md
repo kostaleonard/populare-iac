@@ -2,6 +2,21 @@
 
 This file contains notes on the Kubernetes cluster and its management.
 
+## Minikube and offline deployment
+
+You can run an offline version of the app in minikube. The only extra step is
+to configure the database URI secret. You can set up an RDS instance and
+provide its URI as the secret, or you can have an in-memory database in the
+container running the database proxy. If you choose the latter, note that you
+must keep the replica count of the database proxy pods (populare-db-proxy) set
+to 1.
+
+```bash
+# From kubernetes-standalone/
+kubectl create secret generic db-certs --from-literal=db-uri=sqlite:////tmp/populare_rds.db
+kubectl apply -f populare-kubernetes.yaml
+```
+
 ## Create the application
 
 ```bash
