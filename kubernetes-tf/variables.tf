@@ -1,9 +1,3 @@
-variable "cluster_name" {
-  description = "EKS cluster name"
-  type        = string
-  default     = "populare-cluster"
-}
-
 variable "db_name" {
   description = "RDS database name"
   type        = string
