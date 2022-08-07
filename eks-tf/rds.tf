@@ -1,6 +1,6 @@
 resource "aws_db_subnet_group" "populare" {
   name       = "populare"
-  subnet_ids = module.vpc.public_subnets
+  subnet_ids = module.vpc.private_subnets
 
   tags = {
     Name = "populare"
@@ -19,7 +19,7 @@ resource "aws_db_instance" "populare" {
   db_subnet_group_name   = aws_db_subnet_group.populare.name
   vpc_security_group_ids = [aws_security_group.rds.id]
   parameter_group_name   = aws_db_parameter_group.populare.name
-  publicly_accessible    = true
+  publicly_accessible    = false
   skip_final_snapshot    = true
 }
 
@@ -41,6 +41,7 @@ resource "aws_security_group" "rds" {
     cidr_blocks = ["0.0.0.0/0"]
   }
 
+  # TODO I don't think we need to allow 3306 egress, despite the guide here: https://github.com/hashicorp/learn-terraform-rds/blob/main/main.tf
   egress {
     from_port   = 3306
     to_port     = 3306
