@@ -22,16 +22,26 @@ provider "aws" {
   region = "us-east-2"
 }
 
-data "aws_eks_cluster" "default" {
-  name = var.cluster_name
-}
-
-data "aws_eks_cluster_auth" "default" {
-  name = var.cluster_name
-}
-
 provider "kubernetes" {
   host                   = data.aws_eks_cluster.default.endpoint
   cluster_ca_certificate = base64decode(data.aws_eks_cluster.default.certificate_authority[0].data)
   token                  = data.aws_eks_cluster_auth.default.token
+}
+
+data "terraform_remote_state" "populare_workspace_state" {
+  backend = "remote"
+  config = {
+    organization = "kosta-mlops"
+    workspaces = {
+      name    = "populare"
+    }
+  }
+}
+
+data "aws_eks_cluster" "default" {
+  name = data.terraform_remote_state.populare_workspace_state.outputs.cluster_name
+}
+
+data "aws_eks_cluster_auth" "default" {
+  name = data.terraform_remote_state.populare_workspace_state.outputs.cluster_name
 }
