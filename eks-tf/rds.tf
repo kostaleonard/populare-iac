@@ -1,6 +1,10 @@
+resource "random_password" "db_password" {
+  length = 16
+}
+
 resource "aws_db_subnet_group" "populare" {
   name       = "populare"
-  subnet_ids = module.vpc.public_subnets
+  subnet_ids = module.vpc.private_subnets
 
   tags = {
     Name = "populare"
@@ -14,12 +18,12 @@ resource "aws_db_instance" "populare" {
   engine                 = "mysql"
   engine_version         = "8.0"
   username               = var.db_username
-  password               = var.db_password
+  password               = random_password.db_password.result
   db_name                = "populare_db"
   db_subnet_group_name   = aws_db_subnet_group.populare.name
   vpc_security_group_ids = [aws_security_group.rds.id]
   parameter_group_name   = aws_db_parameter_group.populare.name
-  publicly_accessible    = true
+  publicly_accessible    = false
   skip_final_snapshot    = true
 }
 
@@ -35,13 +39,6 @@ resource "aws_security_group" "rds" {
   vpc_id = module.vpc.vpc_id
 
   ingress {
-    from_port   = 3306
-    to_port     = 3306
-    protocol    = "tcp"
-    cidr_blocks = ["0.0.0.0/0"]
-  }
-
-  egress {
     from_port   = 3306
     to_port     = 3306
     protocol    = "tcp"

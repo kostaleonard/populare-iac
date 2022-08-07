@@ -96,7 +96,7 @@ resource "kubernetes_manifest" "populare-db-proxy-deployment" {
     }
     "spec" = {
       "minReadySeconds" = 10
-      "replicas" = 1
+      "replicas" = 2
       "selector" = {
         "matchLabels" = {
           "app" = "populare-db-proxy"

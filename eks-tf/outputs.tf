@@ -4,12 +4,6 @@ output "rds_hostname" {
   sensitive   = true
 }
 
-output "rds_port" {
-  description = "RDS instance port"
-  value       = aws_db_instance.populare.port
-  sensitive   = true
-}
-
 output "cluster_name" {
   description = "EKS cluster name"
   value       = var.cluster_name
@@ -22,12 +16,11 @@ output "db_name" {
 
 output "db_username" {
   description = "Database administrator username"
-  value       = var.db_username
-  sensitive   = true
+  value       = aws_db_instance.populare.username
 }
 
 output "db_password" {
   description = "Database administrator password"
-  value       = var.db_password
+  value       = aws_db_instance.populare.password
   sensitive   = true
 }
