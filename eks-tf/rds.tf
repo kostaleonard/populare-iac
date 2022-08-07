@@ -41,14 +41,6 @@ resource "aws_security_group" "rds" {
     cidr_blocks = ["0.0.0.0/0"]
   }
 
-  # TODO I don't think we need to allow 3306 egress, despite the guide here: https://github.com/hashicorp/learn-terraform-rds/blob/main/main.tf
-  egress {
-    from_port   = 3306
-    to_port     = 3306
-    protocol    = "tcp"
-    cidr_blocks = ["0.0.0.0/0"]
-  }
-
   tags = {
     Name = "populare_rds"
   }
