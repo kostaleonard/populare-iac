@@ -4,7 +4,7 @@ resource "kubernetes_secret" "db-certs" {
   }
 
   data = {
-    db-uri = "mysql+pymysql://${var.db_username}:${var.db_password}@${var.rds_hostname}/${var.db_name}"
+    db-uri = "mysql+pymysql://${data.terraform_remote_state.populare_workspace_state.outputs.db_username}:${data.terraform_remote_state.populare_workspace_state.outputs.db_password}@${data.terraform_remote_state.populare_workspace_state.outputs.rds_hostname}/${data.terraform_remote_state.populare_workspace_state.outputs.db_name}"
   }
 }
 
