@@ -173,3 +173,26 @@ spec:
                 - ok
             periodSeconds: 5
             initialDelaySeconds: 15
+---
+# Usage instructions here: https://hub.docker.com/r/linuxserver/wireguard
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: bulwark
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: bulwark
+  template:
+    metadata:
+      name: bulwark
+      labels:
+        app: bulwark
+    spec:
+      containers:
+        - image: linuxserver/wireguard
+          name: bulwark
+# TODO docker run args
+# TODO readiness and liveness probes
+# TODO load balancer service for bulwark
