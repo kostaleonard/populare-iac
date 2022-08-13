@@ -118,8 +118,23 @@ sudo wg-quick down /tmp/wireguard-config/peer_leo_mac/peer_leo_mac.conf
 
 ## Kubernetes
 
-TODO
+We successfully added the container and a service to back it in our Kubernetes
+deployment. There were a few configuration changes of note.
 
-## Terraform
+### Minikube
 
-TODO
+In minikube, to give the container the correct permissions, you need to run
+`minikube start --extra-config="kubelet.allowed-unsafe-sysctls=net.ipv4.ip_forward"`.
+After some testing, we also found that `minikube service wireguard --url` would
+set up a port on the host listening on TCP, not UDP. This appears to be an open
+issue (technically closed because it was marked stale) in minikube, available
+[here](https://github.com/kubernetes/minikube/issues/12362). While it did
+appear possible to use another driver and some addons to get the connection
+from outside the cluster to the VPN working, we did not attempt that
+workaround. We did, however, add a client in the cluster that we configured in
+much the same way as described above, using for the endpoint in the client
+configuration the cluster IP of the service. The connection from inside the
+cluster was successful, although using the DNS name of the service as the
+endpoint did not work. This success led us to believe that the issues with
+routing to the cluster were a product of minikube, and so we moved on to AWS
+and Terraform.
