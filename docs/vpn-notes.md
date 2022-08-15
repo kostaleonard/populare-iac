@@ -138,3 +138,9 @@ cluster was successful, although using the DNS name of the service as the
 endpoint did not work. This success led us to believe that the issues with
 routing to the cluster were a product of minikube, and so we moved on to AWS
 and Terraform.
+
+### Terraform
+
+TODO
+
+https://stackoverflow.com/questions/68092279/fixing-datadog-agent-congestion-issues-in-amazon-eks-cluster

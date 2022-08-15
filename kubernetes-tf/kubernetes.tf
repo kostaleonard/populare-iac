@@ -257,3 +257,149 @@ resource "kubernetes_manifest" "reverse-proxy-service" {
     }
   }
 }
+
+resource "kubernetes_manifest" "wireguard-deployment" {
+  manifest = {
+    "apiVersion" = "apps/v1"
+    "kind" = "Deployment"
+    "metadata" = {
+      "name" = "wireguard"
+      "namespace" = "default"
+    }
+    "spec" = {
+      "replicas" = 1
+      "selector" = {
+        "matchLabels" = {
+          "app" = "wireguard"
+        }
+      }
+      "template" = {
+        "metadata" = {
+          "labels" = {
+            "app" = "wireguard"
+          }
+          "name" = "wireguard"
+        }
+        "spec" = {
+          "containers" = [
+            {
+              "env" = [
+                {
+                  "name" = "PUID"
+                  "value" = "1000"
+                },
+                {
+                  "name" = "PGID"
+                  "value" = "1000"
+                },
+                {
+                  "name" = "TZ"
+                  "value" = "America/Los_Angeles"
+                },
+                {
+                  "name" = "SERVERURL"
+                  "value" = "wireguard" # TODO can we make this the load balancer IP?
+                },
+                {
+                  "name" = "INTERNAL_SUBNET"
+                  "value" = "10.13.13.0"
+                },
+                {
+                  "name" = "PEERS"
+                  "value" = "leo_mac"
+                },
+                {
+                  "name" = "PEERDNS"
+                  "value" = "auto"
+                },
+                {
+                  "name" = "ALLOWEDIPS"
+                  "value" = "10.13.13.0/24"
+                },
+              ]
+              "image" = "linuxserver/wireguard"
+              "name" = "wireguard"
+              "ports" = [
+                {
+                  "containerPort" = 51820
+                  "protocol" = "UDP"
+                },
+              ]
+              "securityContext" = {
+                "capabilities" = {
+                  "add" = [
+                    "NET_ADMIN",
+                    "SYS_MODULE",
+                  ]
+                }
+              }
+              "volumeMounts" = [ # TODO add persistent volume
+                {
+                  "mountPath" = "/config"
+                  "name" = "dockerdata"
+                  "subPath" = "wireguard" # TODO will the subpath be automatically created?
+                },
+                {
+                  "mountPath" = "/lib/modules"
+                  "name" = "host"
+                  "subPath" = "lib/modules"
+                },
+              ]
+            },
+          ]
+          "securityContext" = {
+            "sysctls" = [
+              {
+                "name" = "net.ipv4.ip_forward"
+                "value" = "1"
+              },
+            ]
+          }
+          "volumes" = [
+            {
+              "hostPath" = {
+                "path" = "/tmp"
+                "type" = "Directory"
+              }
+              "name" = "dockerdata"
+            },
+            {
+              "hostPath" = {
+                "path" = "/"
+                "type" = "Directory"
+              }
+              "name" = "host"
+            },
+          ]
+        }
+      }
+    }
+  }
+}
+
+resource "kubernetes_manifest" "wireguard-service" {
+  manifest = {
+    "apiVersion" = "v1"
+    "kind" = "Service"
+    "metadata" = {
+      "labels" = {
+        "app" = "wireguard"
+      }
+      "name" = "wireguard"
+      "namespace" = "default"
+    }
+    "spec" = {
+      "ports" = [
+        {
+          "port" = 51820
+          "protocol" = "UDP"
+          "targetPort" = 51820
+        },
+      ]
+      "selector" = {
+        "app" = "wireguard"
+      }
+      "type" = "LoadBalancer"
+    }
+  }
+}
