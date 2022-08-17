@@ -199,7 +199,6 @@ spec:
       volumes:
         - name: dockerdata
           hostPath:
-            # TODO need better mount point
             path: /tmp
             type: Directory
         - name: host
@@ -214,8 +213,7 @@ spec:
               add:
               - NET_ADMIN
               - SYS_MODULE
-          # TODO replace SERVERURL in client configuration with service URL
-          # TODO need a volume mount for wireguard
+          # Replace SERVERURL in client configuration with service URL
           volumeMounts:
             - name: dockerdata
               subPath: wireguard
@@ -243,7 +241,6 @@ spec:
           ports:
           - containerPort: 51820
             protocol: UDP
-# TODO readiness and liveness probes
 ---
 apiVersion: v1
 kind: Service

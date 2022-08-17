@@ -3,6 +3,7 @@ sudo su
 # Get public IP using the AWS instance metadata service.
 SERVER_PUBLIC_IP=$(curl http://169.254.169.254/latest/meta-data/public-ipv4)
 export SERVER_PUBLIC_IP
+echo "Server IP is $SERVER_PUBLIC_IP"
 apt update
 apt install -y docker.io
 mkdir -p /etc/wireguard
@@ -15,7 +16,7 @@ docker run -d \
   -e PGID=1000 \
   -e TZ=Europe/London \
   -e PEERS=leo_mac \
-  -e SERVERURL=SERVER_PUBLIC_IP \
+  -e SERVERURL="$SERVER_PUBLIC_IP" \
   -e SERVERPORT=51820 \
   -e INTERNAL_SUBNET=10.13.13.0 \
   -e ALLOWEDIPS=10.0.0.0/8 \

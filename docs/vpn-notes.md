@@ -139,13 +139,56 @@ endpoint did not work. This success led us to believe that the issues with
 routing to the cluster were a product of minikube, and so we moved on to AWS
 and Terraform.
 
-### Terraform
+## Terraform
 
-TODO
+We tried to deploy the VPN on EKS, but the effort required to allow a pod to make
+VPN configurations was beyond the scope of this project. In particular, to
+allow the `net.ipv4.ip_forward` unsafe sysctl, you need to launch the kubelet
+on each EKS node (that you would like to be able to serve this kind of pod,
+which could be restricted with taints or labels) with an extra argument.
+Terraform allows you to supply extra arguments in a launch template that calls
+the kubelet bootstrap directly--a workflow that already seems brittle. However,
+to change the launch template, you need to provide a custom AMI in a registry
+that is accessible from your VPC. S3 is one way to store those AMIs. [This stack overflow post](https://stackoverflow.com/questions/68092279/fixing-datadog-agent-congestion-issues-in-amazon-eks-cluster)
+shows a possible Terraform workflow to achieve the desired kubelet configuration. I was not
+certain how difficult it would be to create a new AMI, nor how much it would
+cost, so I chose to create a standalone EC2 instance in the VPC for Wireguard,
+recognizing that VPN resiliency would be degraded slightly.
 
-https://stackoverflow.com/questions/68092279/fixing-datadog-agent-congestion-issues-in-amazon-eks-cluster
-
+The EC2 instance, named "bulwark", runs the Wireguard Docker container. It uses
+the AWS instance metadata endpoint (`http://169.254.169.254/latest/meta-data/`)
+to get its public IP address. My Macbook's SSH key is built in for instance
+SSH, but `aws_key_pair.bulwark_ssh_key.public_key` in `vpn.tf` could be
+modified to use any other key pair that is more convenient. After applying the
+EKS Terraform plan, SSH into bulwark to get the client configuration.
 
 ```bash
-ssh -i ~/.ssh/id_ed25519 ubuntu@<bulwark-public-ip>
+ssh ubuntu@<bulwark-public-ip>
+cat /etc/wireguard/peer_leo_mac/peer_leo_mac.conf
+```
+
+Copy the configuration file to the client machine, say at
+`/tmp/wireguard-ec2/peer_leo_mac.conf`. Then turn on the VPN.
+
+```bash
+sudo wg-quick up /tmp/wireguard-ec2/peer_leo_mac.conf
+```
+
+Now try pinging either the peer IP or the private IP address of the EC2
+instance.
+
+```bash
+ping 10.13.13.1
+ping <server-private-ip>
+```
+
+If you've also applied the Kubernetes Terraform configuration, you can reach
+internal services directly through the VPN since you are in the same VPC.
+
+TODO reach Kubernetes deployment resources through VPN
+
+Tear down the VPN with the following.
+
+```bash
+sudo wg-quick down /tmp/wireguard-ec2/peer_leo_mac.conf
 ```
