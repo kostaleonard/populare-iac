@@ -8,8 +8,6 @@ resource "aws_instance" "bulwark" {
   user_data = templatefile("${path.module}/bulwark_bootstrap.tftpl", {})
 
   subnet_id = module.vpc.public_subnets[0]
-  # TODO do we need to explicitly define the private IP for it to get a private interface? We don't really care what the IP is.
-  #private_ip = "10.0.4.40"
   vpc_security_group_ids = [aws_security_group.bulwark.id]
   tags = {
     Name = "bulwark"

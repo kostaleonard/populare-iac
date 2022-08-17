@@ -35,33 +35,3 @@ module "eks" {
     Terraform   = "true"
   }
 }
-
-#data "template_file" "bootstrap" {
-#  template = file("${path.module}/bootstrap.tpl")
-#  vars = {
-#    cluster_name        = var.cluster_name
-#    cluster_auth_base64 = module.eks.cluster_certificate_authority_data
-#    endpoint            = module.eks.cluster_endpoint
-#  }
-#}
-#
-#resource "aws_ami" "eks_node" {
-#  name                = "custom_ami"
-#}
-
-#data "aws_ami" "eks_node" {
-#  # Use your AWS ID here; not secret.
-#  owners      = ["890362829064"]
-#  most_recent = true
-#
-#  filter {
-#    name   = "name"
-#    values = ["amazon-eks-node-${module.eks.cluster_version}-v20220815"]
-#  }
-#}
-
-#resource "aws_launch_template" "nodes" {
-#  name = "modified_sysctl"
-#  image_id = aws_ami.eks_node.id
-#  user_data = base64encode(data.template_file.bootstrap.rendered)
-#}
