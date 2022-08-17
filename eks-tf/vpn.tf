@@ -1,8 +1,8 @@
 resource "aws_instance" "bulwark" {
   ami           = "ami-05803413c51f242b7" # us-east-2
-  # TODO add name
   instance_type = "t2.micro"
   associate_public_ip_address = true
+  # SSH username for these EC2 instances is "ubuntu".
   key_name = "bulwark_ssh_key"
 
   # TODO docker run VPN server
@@ -11,7 +11,8 @@ resource "aws_instance" "bulwark" {
 #  user_data     = <<-EOF
 #                  #!/bin/bash
 #                  sudo su
-#                  yum -y install httpd
+#                  apt update
+#                  apt install -y docker.io
 #
 #                  docker run -d \
 #                    --rm \
@@ -35,9 +36,9 @@ resource "aws_instance" "bulwark" {
 
   subnet_id = module.vpc.public_subnets[0]
   # TODO do we need to explicitly define the private IP for it to get a private interface? We don't really care what the IP is.
-  private_ip = "10.0.4.40"
-  # TODO add security group rule to allow 22 and 51280
-  security_groups = [] # TODO
+  #private_ip = "10.0.4.40"
+  #security_groups = [aws_security_group.bulwark.name]
+  vpc_security_group_ids = [aws_security_group.bulwark.id]
   tags = {
     Name = "bulwark"
   }
@@ -49,18 +50,33 @@ resource "aws_key_pair" "bulwark_ssh_key" {
   public_key = "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIHTQwGhjFRWQccBre/mDCMo7rWmFlyVJ+i+1iFjUpF4t kostaleonard@gmail.com"
 }
 
-#resource "aws_subnet" "bulwark" {
-#  vpc_id            = module.vpc.vpc_id
-#  # TODO can we make this not hard-coded?
-#  cidr_block        = "10.0.7.0/24"
-#  availability_zone = module.vpc.azs[0]
-#}
-#
-#data "aws_subnet_ids" "public" {
-#  vpc_id = module.vpc.vpc_id
-#}
+resource "aws_security_group" "bulwark" {
+  name   = "bulwark"
+  vpc_id = module.vpc.vpc_id
 
-#resource "aws_network_interface" "bulwark" {
-#  # TODO security group settings
-#  subnet_id   = aws_subnet.bulwark.id
-#}
+  ingress {
+    from_port   = 22
+    to_port     = 22
+    protocol    = "tcp"
+    cidr_blocks = ["0.0.0.0/0"]
+  }
+
+  ingress {
+    from_port   = 51820
+    to_port     = 51820
+    protocol    = "udp"
+    cidr_blocks = ["0.0.0.0/0"]
+  }
+
+  egress {
+    from_port        = 0
+    to_port          = 0
+    protocol         = "-1"
+    cidr_blocks      = ["0.0.0.0/0"]
+    ipv6_cidr_blocks = ["::/0"]
+  }
+
+  tags = {
+    Name = "bulwark"
+  }
+}

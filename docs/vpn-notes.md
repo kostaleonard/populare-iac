@@ -144,3 +144,8 @@ and Terraform.
 TODO
 
 https://stackoverflow.com/questions/68092279/fixing-datadog-agent-congestion-issues-in-amazon-eks-cluster
+
+
+```bash
+ssh -i ~/.ssh/id_ed25519 ubuntu@<bulwark-public-ip>
+```
