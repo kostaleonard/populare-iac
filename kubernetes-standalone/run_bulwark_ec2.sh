@@ -7,9 +7,10 @@ docker run -d \
   -e PGID=1000 \
   -e TZ=Europe/London \
   -e PEERS=leo_mac \
-  -e SERVERURL=0.0.0.0 \
+  -e SERVERURL=18.116.14.22 \
   -e SERVERPORT=51820 \
   -e INTERNAL_SUBNET=10.13.13.0 \
+  -e ALLOWEDIPS=10.0.0.0/8 \
   -e PEERDNS=auto \
   -p 51820:51820/udp \
   -v /tmp/bulwark-config:/config \
