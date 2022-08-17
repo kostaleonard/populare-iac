@@ -34,3 +34,8 @@ output "vpc_public_subnets" {
   description = "VPC public subnets"
   value       = module.vpc.public_subnets
 }
+
+output "bulwark_ip" {
+  description = "The public ip for bulwark"
+  value       = aws_instance.bulwark.public_ip
+}

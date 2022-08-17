@@ -22,10 +22,6 @@ module "eks" {
 
   eks_managed_node_groups = {
     populare-node-group = {
-      # TODO may want to have two sets of node groups
-      create_launch_template = false
-      launch_template_name   = aws_launch_template.nodes.name
-
       desired_capacity = 1
       max_capacity     = 3
       min_capacity     = 1
@@ -40,18 +36,18 @@ module "eks" {
   }
 }
 
-data "template_file" "bootstrap" {
-  template = file("${path.module}/bootstrap.tpl")
-  vars = {
-    cluster_name        = var.cluster_name
-    cluster_auth_base64 = module.eks.cluster_certificate_authority_data
-    endpoint            = module.eks.cluster_endpoint
-  }
-}
-
-resource "aws_ami" "eks_node" {
-  name                = "custom_ami"
-}
+#data "template_file" "bootstrap" {
+#  template = file("${path.module}/bootstrap.tpl")
+#  vars = {
+#    cluster_name        = var.cluster_name
+#    cluster_auth_base64 = module.eks.cluster_certificate_authority_data
+#    endpoint            = module.eks.cluster_endpoint
+#  }
+#}
+#
+#resource "aws_ami" "eks_node" {
+#  name                = "custom_ami"
+#}
 
 #data "aws_ami" "eks_node" {
 #  # Use your AWS ID here; not secret.
@@ -64,8 +60,8 @@ resource "aws_ami" "eks_node" {
 #  }
 #}
 
-resource "aws_launch_template" "nodes" {
-  name = "modified_sysctl"
-  image_id = aws_ami.eks_node.id
-  user_data = base64encode(data.template_file.bootstrap.rendered)
-}
+#resource "aws_launch_template" "nodes" {
+#  name = "modified_sysctl"
+#  image_id = aws_ami.eks_node.id
+#  user_data = base64encode(data.template_file.bootstrap.rendered)
+#}
