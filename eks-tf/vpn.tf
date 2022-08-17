@@ -5,39 +5,11 @@ resource "aws_instance" "bulwark" {
   # SSH username for these EC2 instances is "ubuntu".
   key_name = "bulwark_ssh_key"
 
-  # TODO docker run VPN server
-  # TODO change directory from /tmp/bulwark-config
-  # TODO use template file to set the server url if that makes config easier
-#  user_data     = <<-EOF
-#                  #!/bin/bash
-#                  sudo su
-#                  apt update
-#                  apt install -y docker.io
-#
-#                  docker run -d \
-#                    --rm \
-#                    --name=bulwark \
-#                    --cap-add=NET_ADMIN \
-#                    --cap-add=SYS_MODULE \
-#                    -e PUID=1000 \
-#                    -e PGID=1000 \
-#                    -e TZ=Europe/London \
-#                    -e PEERS=leo_mac \
-#                    -e SERVERURL=0.0.0.0 \
-#                    -e SERVERPORT=51820 \
-#                    -e INTERNAL_SUBNET=10.13.13.0 \
-#                    -e PEERDNS=auto \
-#                    -p 51820:51820/udp \
-#                    -v /tmp/bulwark-config:/config \
-#                    -v /lib/modules:/lib/modules \
-#                    --sysctl="net.ipv4.conf.all.src_valid_mark=1" \
-#                    linuxserver/wireguard
-#                  EOF
+  user_data = templatefile("${path.module}/bulwark_bootstrap.tftpl", {})
 
   subnet_id = module.vpc.public_subnets[0]
   # TODO do we need to explicitly define the private IP for it to get a private interface? We don't really care what the IP is.
   #private_ip = "10.0.4.40"
-  #security_groups = [aws_security_group.bulwark.name]
   vpc_security_group_ids = [aws_security_group.bulwark.id]
   tags = {
     Name = "bulwark"
