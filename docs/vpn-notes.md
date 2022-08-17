@@ -191,8 +191,15 @@ ping <server-private-ip>
 
 If you've also applied the Kubernetes Terraform configuration, you can reach
 internal services directly through the VPN since you are in the same VPC.
+First, get an internal pod IP address--we will use the web server. Then, ping
+that pod's internal IP.
 
-TODO reach Kubernetes deployment resources through VPN
+```bash
+kubectl get pods
+# Find the address in 10.0.0.0/16.
+kubectl describe pod <populare-xxxxx-xxxxx>
+ping <internal-ip>
+```
 
 Tear down the VPN with the following.
 

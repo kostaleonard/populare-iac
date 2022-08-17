@@ -18,6 +18,15 @@ module "eks" {
       cidr_blocks      = ["0.0.0.0/0"]
       ipv6_cidr_blocks = ["::/0"]
     }
+
+    ingress_icmp_from_bulwark = {
+      description      = "ICMP from bulwark"
+      protocol         = "icmp"
+      from_port        = -1
+      to_port          = -1
+      type             = "ingress"
+      source_security_group_id = aws_security_group.bulwark.id
+    }
   }
 
   eks_managed_node_groups = {
