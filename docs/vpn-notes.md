@@ -167,6 +167,13 @@ ssh ubuntu@<bulwark-public-ip>
 cat /etc/wireguard/peer_leo_mac/peer_leo_mac.conf
 ```
 
+While you are SSH'd into bulwark, you can view the logs for the bootstrap with
+the following command.
+
+```bash
+less /var/log/cloud-init-output.log
+```
+
 Copy the configuration file to the client machine, say at
 `/tmp/wireguard-ec2/peer_leo_mac.conf`. Then turn on the VPN.
 
