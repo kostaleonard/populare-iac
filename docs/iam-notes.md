@@ -36,6 +36,10 @@ custom policies listed below.
 
 * AmazonRDSFullAccess (AWS Managed Policy)
 
+### CloudTrail
+
+* AWSCloudTrail_FullAccess (AWS Managed Policy)
+
 ## IAM and Terraform
 
 ### Determining the minimum IAM permissions required for a plan

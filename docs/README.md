@@ -7,3 +7,4 @@ configuration and deployment.
 roles.
 * [terraform-notes.md](terraform-notes.md). Notes on deployment with Terraform.
 * [vpn-notes.md](vpn-notes.md). Notes on the Wireguard VPN.
+* [cloudwatch-notes.md](cloudwatch-notes.md). Notes on logging with CloudWatch.
