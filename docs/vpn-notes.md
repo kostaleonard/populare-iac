@@ -174,6 +174,12 @@ the following command.
 less /var/log/cloud-init-output.log
 ```
 
+You can also check that the Wireguard server is running using the following.
+
+```bash
+sudo docker ps
+```
+
 Copy the configuration file to the client machine, say at
 `/tmp/wireguard-ec2/peer_leo_mac.conf`. Then turn on the VPN.
 
@@ -196,7 +202,7 @@ that pod's internal IP.
 
 ```bash
 kubectl get pods
-# Find the address in 10.0.0.0/16.
+# Find the address in 10.0.0.0/16 in the kubectl describe output.
 kubectl describe pod <populare-xxxxx-xxxxx>
 ping <internal-ip>
 ```
