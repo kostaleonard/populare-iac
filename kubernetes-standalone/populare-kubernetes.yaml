@@ -294,3 +294,55 @@ spec:
             - name: host
               subPath: lib/modules
               mountPath: /lib/modules
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: prometheus
+data:
+  prometheus.yml: |-
+    global:
+      scrape_interval: 15s
+      external_labels:
+        monitor: 'codelab-monitor'
+    scrape_configs:
+      - job_name: 'prometheus'
+        scrape_interval: 5s
+        static_configs:
+          - targets: ['localhost:9090']
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: prometheus
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: prometheus
+  template:
+    metadata:
+      name: prometheus
+      labels:
+        app: prometheus
+    spec:
+      volumes:
+#        - name: prometheus
+#          hostPath:
+#            path: /tmp/prometheus
+#            type: DirectoryOrCreate
+        - name: config
+          configMap:
+            name: prometheus
+      containers:
+        - image: prom/prometheus
+          name: prometheus
+          volumeMounts:
+#            - name: prometheus
+#              mountPath: /etc/prometheus
+            - name: config
+              mountPath: /etc/prometheus
+#              subPath: prometheus.yml
+          ports:
+            - containerPort: 9090
+# TODO readiness and liveness probes
