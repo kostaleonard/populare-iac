@@ -6,3 +6,4 @@ configuration and deployment.
 * [iam-notes.md](iam-notes.md). Notes on the use and configuration of IAM
 roles.
 * [terraform-notes.md](terraform-notes.md). Notes on deployment with Terraform.
+* [vpn-notes.md](vpn-notes.md). Notes on the Wireguard VPN.

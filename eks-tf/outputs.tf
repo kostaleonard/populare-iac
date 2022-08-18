@@ -24,3 +24,18 @@ output "db_password" {
   value       = aws_db_instance.populare.password
   sensitive   = true
 }
+
+output "vpc_id" {
+  description = "VPC ID"
+  value       = module.vpc.vpc_id
+}
+
+output "vpc_public_subnets" {
+  description = "VPC public subnets"
+  value       = module.vpc.public_subnets
+}
+
+output "bulwark_ip" {
+  description = "The public ip for bulwark"
+  value       = aws_instance.bulwark.public_ip
+}

@@ -173,3 +173,124 @@ spec:
                 - ok
             periodSeconds: 5
             initialDelaySeconds: 15
+---
+# Usage instructions here: https://hub.docker.com/r/linuxserver/wireguard
+# Great discussion on linuxserver/wireguard and Kubernetes here: https://github.com/linuxserver/docker-wireguard/issues/78
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: wireguard
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: wireguard
+  template:
+    metadata:
+      name: wireguard
+      labels:
+        app: wireguard
+    spec:
+      securityContext:
+        sysctls:
+          # Needs minikube start --extra-config="kubelet.allowed-unsafe-sysctls=net.ipv4.ip_forward"
+          - name: net.ipv4.ip_forward
+            value: '1'
+      volumes:
+        - name: dockerdata
+          hostPath:
+            path: /tmp
+            type: Directory
+        - name: host
+          hostPath:
+            path: /
+            type: Directory
+      containers:
+        - image: linuxserver/wireguard
+          name: wireguard
+          securityContext:
+            capabilities:
+              add:
+              - NET_ADMIN
+              - SYS_MODULE
+          # Replace SERVERURL in client configuration with service URL
+          volumeMounts:
+            - name: dockerdata
+              subPath: wireguard
+              mountPath: /config
+            - name: host
+              subPath: lib/modules
+              mountPath: /lib/modules
+          env:
+          - name: PUID
+            value: '1000'
+          - name: PGID
+            value: '1000'
+          - name: TZ
+            value: 'America/Los_Angeles'
+          - name: SERVERURL
+            value: 'wireguard'
+          - name: INTERNAL_SUBNET
+            value: '10.13.13.0'
+          - name: PEERS
+            value: 'leo_mac'
+          - name: PEERDNS
+            value: 'auto'
+          - name: ALLOWEDIPS
+            value: 10.13.13.0/24
+          ports:
+          - containerPort: 51820
+            protocol: UDP
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: wireguard
+  labels:
+    app: wireguard
+spec:
+  type: LoadBalancer
+  ports:
+  - port: 51820
+    targetPort: 51820
+    protocol: UDP
+  selector:
+    app: wireguard
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: wireguard-client
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: wireguard-client
+  template:
+    metadata:
+      name: wireguard-client
+      labels:
+        app: wireguard-client
+    spec:
+      securityContext:
+        sysctls:
+          # Needs minikube start --extra-config="kubelet.allowed-unsafe-sysctls=net.ipv4.ip_forward"
+          - name: net.ipv4.ip_forward
+            value: '1'
+      volumes:
+        - name: host
+          hostPath:
+            path: /
+            type: Directory
+      containers:
+        - image: linuxserver/wireguard
+          name: wireguard
+          securityContext:
+            capabilities:
+              add:
+                - NET_ADMIN
+                - SYS_MODULE
+          volumeMounts:
+            - name: host
+              subPath: lib/modules
+              mountPath: /lib/modules
