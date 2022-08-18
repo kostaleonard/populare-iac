@@ -327,10 +327,6 @@ spec:
         app: prometheus
     spec:
       volumes:
-#        - name: prometheus
-#          hostPath:
-#            path: /tmp/prometheus
-#            type: DirectoryOrCreate
         - name: config
           configMap:
             name: prometheus
@@ -338,11 +334,22 @@ spec:
         - image: prom/prometheus
           name: prometheus
           volumeMounts:
-#            - name: prometheus
-#              mountPath: /etc/prometheus
             - name: config
               mountPath: /etc/prometheus
-#              subPath: prometheus.yml
           ports:
             - containerPort: 9090
 # TODO readiness and liveness probes
+# TODO volume mount for data
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: prometheus
+  labels:
+    app: prometheus
+spec:
+  ports:
+    - port: 80
+      targetPort: 9090
+  selector:
+    app: prometheus
