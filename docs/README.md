@@ -10,3 +10,5 @@ roles.
 * [cloudwatch-notes.md](cloudwatch-notes.md). Notes on logging with CloudWatch.
 * [cloudtrail-notes.md](cloudtrail-notes.md). Notes on AWS API event logging
 with CloudTrail.
+* [prometheus-notes.md](prometheus-notes.md). Notes on Prometheus monitoring of
+deployed apps and services.
