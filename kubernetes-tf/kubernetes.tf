@@ -112,7 +112,7 @@ resource "kubernetes_manifest" "populare-db-proxy-deployment" {
         "spec" = {
           "containers" = [
             {
-              "image" = "kostaleonard/populare_db_proxy:0.0.10"
+              "image" = "kostaleonard/populare_db_proxy:0.0.11"
               "livenessProbe" = {
                 "httpGet" = {
                   "path" = "/health"

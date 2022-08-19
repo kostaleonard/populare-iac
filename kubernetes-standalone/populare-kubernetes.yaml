@@ -59,7 +59,7 @@ spec:
         app: populare-db-proxy
     spec:
       containers:
-      - image: kostaleonard/populare_db_proxy:0.0.10
+      - image: kostaleonard/populare_db_proxy:0.0.11
         name: populare-db-proxy
         ports:
         - containerPort: 8000
@@ -295,6 +295,43 @@ spec:
               subPath: lib/modules
               mountPath: /lib/modules
 ---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRole
+metadata:
+  name: prometheus
+rules:
+- apiGroups: [""]
+  resources:
+  - nodes
+  - services
+  - endpoints
+  - pods
+  verbs: ["get", "list", "watch"]
+- apiGroups: [""]
+  resources:
+  - configmaps
+  verbs: ["get"]
+- nonResourceURLs: ["/metrics"]
+  verbs: ["get"]
+---
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  name: prometheus
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRoleBinding
+metadata:
+  name: prometheus
+roleRef:
+  apiGroup: rbac.authorization.k8s.io
+  kind: ClusterRole
+  name: prometheus
+subjects:
+  - kind: ServiceAccount
+    name: prometheus
+    namespace: default
+---
 apiVersion: v1
 kind: ConfigMap
 metadata:
@@ -306,13 +343,22 @@ data:
       external_labels:
         monitor: 'codelab-monitor'
     scrape_configs:
-      - job_name: 'prometheus'
-        scrape_interval: 5s
-        static_configs:
-          - targets: ['localhost:9090']
-#      - job_name: 'populare'
-#        static_configs:
-#          - targets: ['localhost:8080']
+    - job_name: 'prometheus'
+      scrape_interval: 5s
+      static_configs:
+      - targets: ['localhost:9090']
+    - job_name: 'kubernetes-service-endpoints'
+      kubernetes_sd_configs:
+      - role: endpoints
+      relabel_configs:
+      - action: labelmap
+        regex: __meta_kubernetes_service_label_(.+)
+      - source_labels: [__meta_kubernetes_namespace]
+        action: replace
+        target_label: kubernetes_namespace
+      - source_labels: [__meta_kubernetes_service_name]
+        action: replace
+        target_label: kubernetes_name
 ---
 apiVersion: apps/v1
 kind: Deployment
@@ -341,6 +387,7 @@ spec:
               mountPath: /etc/prometheus
           ports:
             - containerPort: 9090
+      serviceAccountName: prometheus
 # TODO readiness and liveness probes
 # TODO volume mount for data
 ---
