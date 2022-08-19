@@ -73,5 +73,36 @@ process_resident_memory_bytes{job="kubernetes-service-endpoints"}
 
 ## Terraform
 
-TODO don't want to expose Prometheus over reverse proxy, since it should not be
-accessible to everyone. Need to make it accessible over Wireguard.
+As states earlier, we don't want to expose Prometheus to external users, so we
+do not make the server available through the reverse proxy. Instead, we access
+Prometheus using the VPN.
+
+First, apply both the EKS and the Kubernetes Terraform plans to create the
+infrastructure, apps, and services. Next, find the internal IP address of the
+Prometheus pod with the following.
+
+```bash
+# Get the name of the Prometheus pod.
+kubectl get pods
+# Get the 10.0.0.0/16 IP address.
+kubectl describe pod <prometheus-xxxxx-xxxxx>
+```
+
+Turn on the Wireguard VPN. See [vpn-notes.md](vpn-notes.md) for instructions on
+retrieving the Wireguard configuration file.
+
+```bash
+sudo wg-quick up /tmp/wireguard-ec2/peer_leo_mac.conf
+```
+
+You can verify that the VPN is working by pinging the Prometheus pod IP and
+curling the server endpoint.
+
+```bash
+# Use the Prometheus pod cluster IP.
+ping <10.0.4.55>
+curl <10.0.4.55>:9090/graph
+```
+
+Now, open a browser and navigate to `<10.0.4.55>:9090/graph` and you will see
+the Prometheus metrics page.

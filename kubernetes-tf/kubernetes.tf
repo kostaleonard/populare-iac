@@ -311,6 +311,7 @@ resource "kubernetes_manifest" "prometheus-service-account" {
     "kind" = "ServiceAccount"
     "metadata" = {
       "name" = "prometheus"
+      "namespace" = "default"
     }
   }
 }
@@ -368,6 +369,7 @@ resource "kubernetes_manifest" "prometheus-configmap" {
     "kind" = "ConfigMap"
     "metadata" = {
       "name" = "prometheus"
+      "namespace" = "default"
     }
   }
 }
@@ -378,6 +380,7 @@ resource "kubernetes_manifest" "prometheus-deployment" {
     "kind" = "Deployment"
     "metadata" = {
       "name" = "prometheus"
+      "namespace" = "default"
     }
     "spec" = {
       "replicas" = 1
@@ -449,6 +452,7 @@ resource "kubernetes_manifest" "prometheus-service" {
         "app" = "prometheus"
       }
       "name" = "prometheus"
+      "namespace" = "default"
     }
     "spec" = {
       "ports" = [
