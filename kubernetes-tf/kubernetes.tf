@@ -257,3 +257,209 @@ resource "kubernetes_manifest" "reverse-proxy-service" {
     }
   }
 }
+
+resource "kubernetes_manifest" "prometheus-clusterrole" {
+  manifest = {
+    "apiVersion" = "rbac.authorization.k8s.io/v1"
+    "kind"       = "ClusterRole"
+    "metadata"   = {
+      "name" = "prometheus"
+    }
+    "rules" = [
+      {
+        "apiGroups" = [
+          "",
+        ]
+        "resources" = [
+          "nodes",
+          "services",
+          "endpoints",
+          "pods",
+        ]
+        "verbs" = [
+          "get",
+          "list",
+          "watch",
+        ]
+      },
+      {
+        "apiGroups" = [
+          "",
+        ]
+        "resources" = [
+          "configmaps",
+        ]
+        "verbs" = [
+          "get",
+        ]
+      },
+      {
+        "nonResourceURLs" = [
+          "/metrics",
+        ]
+        "verbs" = [
+          "get",
+        ]
+      },
+    ]
+  }
+}
+
+resource "kubernetes_manifest" "prometheus-service-account" {
+  manifest = {
+    "apiVersion" = "v1"
+    "kind" = "ServiceAccount"
+    "metadata" = {
+      "name" = "prometheus"
+    }
+  }
+}
+
+resource "kubernetes_manifest" "prometheus-clusterrole-binding" {
+  manifest = {
+    "apiVersion" = "rbac.authorization.k8s.io/v1"
+    "kind" = "ClusterRoleBinding"
+    "metadata" = {
+      "name" = "prometheus"
+    }
+    "roleRef" = {
+      "apiGroup" = "rbac.authorization.k8s.io"
+      "kind" = "ClusterRole"
+      "name" = "prometheus"
+    }
+    "subjects" = [
+      {
+        "kind" = "ServiceAccount"
+        "name" = "prometheus"
+        "namespace" = "default"
+      },
+    ]
+  }
+}
+
+resource "kubernetes_manifest" "prometheus-configmap" {
+  manifest = {
+    "apiVersion" = "v1"
+    "data" = {
+      "prometheus.yml" = <<-EOT
+    global:
+      scrape_interval: 15s
+      external_labels:
+        monitor: 'codelab-monitor'
+    scrape_configs:
+    - job_name: 'prometheus'
+      scrape_interval: 5s
+      static_configs:
+      - targets: ['localhost:9090']
+    - job_name: 'kubernetes-service-endpoints'
+      kubernetes_sd_configs:
+      - role: endpoints
+      relabel_configs:
+      - action: labelmap
+        regex: __meta_kubernetes_service_label_(.+)
+      - source_labels: [__meta_kubernetes_namespace]
+        action: replace
+        target_label: kubernetes_namespace
+      - source_labels: [__meta_kubernetes_service_name]
+        action: replace
+        target_label: kubernetes_name
+    EOT
+    }
+    "kind" = "ConfigMap"
+    "metadata" = {
+      "name" = "prometheus"
+    }
+  }
+}
+
+resource "kubernetes_manifest" "prometheus-deployment" {
+  manifest = {
+    "apiVersion" = "apps/v1"
+    "kind" = "Deployment"
+    "metadata" = {
+      "name" = "prometheus"
+    }
+    "spec" = {
+      "replicas" = 1
+      "selector" = {
+        "matchLabels" = {
+          "app" = "prometheus"
+        }
+      }
+      "template" = {
+        "metadata" = {
+          "labels" = {
+            "app" = "prometheus"
+          }
+          "name" = "prometheus"
+        }
+        "spec" = {
+          "containers" = [
+            {
+              "image" = "prom/prometheus"
+              "livenessProbe" = {
+                "httpGet" = {
+                  "path" = "/metrics"
+                  "port" = 9090
+                }
+                "initialDelaySeconds" = 15
+              }
+              "name" = "prometheus"
+              "ports" = [
+                {
+                  "containerPort" = 9090
+                },
+              ]
+              "readinessProbe" = {
+                "httpGet" = {
+                  "path" = "/metrics"
+                  "port" = 9090
+                }
+                "periodSeconds" = 1
+              }
+              "volumeMounts" = [
+                {
+                  "mountPath" = "/etc/prometheus"
+                  "name" = "config"
+                },
+              ]
+            },
+          ]
+          "serviceAccountName" = "prometheus"
+          "volumes" = [
+            {
+              "configMap" = {
+                "name" = "prometheus"
+              }
+              "name" = "config"
+            },
+          ]
+        }
+      }
+    }
+  }
+}
+
+resource "kubernetes_manifest" "prometheus-service" {
+  manifest = {
+    "apiVersion" = "v1"
+    "kind" = "Service"
+    "metadata" = {
+      "labels" = {
+        "app" = "prometheus"
+      }
+      "name" = "prometheus"
+    }
+    "spec" = {
+      "ports" = [
+        {
+          "port" = 80
+          "targetPort" = 9090
+        },
+      ]
+      "selector" = {
+        "app" = "prometheus"
+      }
+    }
+  }
+}

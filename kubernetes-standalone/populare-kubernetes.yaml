@@ -387,8 +387,17 @@ spec:
               mountPath: /etc/prometheus
           ports:
             - containerPort: 9090
+          readinessProbe:
+            httpGet:
+              path: /metrics
+              port: 9090
+            periodSeconds: 1
+          livenessProbe:
+            httpGet:
+              path: /metrics
+              port: 9090
+            initialDelaySeconds: 15
       serviceAccountName: prometheus
-# TODO readiness and liveness probes
 ---
 apiVersion: v1
 kind: Service
