@@ -15,7 +15,7 @@ spec:
         app: populare
     spec:
       containers:
-        - image: kostaleonard/populare:1.0.7
+        - image: kostaleonard/populare:1.0.11
           name: populare
           ports:
             - containerPort: 80
@@ -310,6 +310,9 @@ data:
         scrape_interval: 5s
         static_configs:
           - targets: ['localhost:9090']
+#      - job_name: 'populare'
+#        static_configs:
+#          - targets: ['localhost:8080']
 ---
 apiVersion: apps/v1
 kind: Deployment

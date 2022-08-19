@@ -34,7 +34,7 @@ resource "kubernetes_manifest" "populare-deployment" {
         "spec" = {
           "containers" = [
             {
-              "image" = "kostaleonard/populare:1.0.7"
+              "image" = "kostaleonard/populare:1.0.11"
               "livenessProbe" = {
                 "httpGet" = {
                   "path" = "/version.json"
