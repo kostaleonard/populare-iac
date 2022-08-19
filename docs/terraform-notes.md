@@ -56,3 +56,17 @@ remaining on AWS.
    terraform init
    terraform destroy
    ```
+
+## Converting Kubernetes manifests to Terraform resources
+
+As noted in [this Terraform blog post](https://www.hashicorp.com/blog/deploy-any-resource-with-the-new-kubernetes-provider-for-hashicorp-terraform),
+you can convert existing Kubernetes manifests into Terraform resources using
+the following command. Note that the manifest can only contain one Kubernetes
+resource.
+
+```bash
+echo 'yamldecode(file("my-manifest-file.yaml"))' | terraform console
+```
+
+Then add the manifest to the Terraform plan under a `kubernetes_manifest`
+resource.
