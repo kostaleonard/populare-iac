@@ -5,6 +5,9 @@ resource "aws_cloudtrail" "trail" {
   s3_bucket_name                = aws_s3_bucket.trail_populare.id
   s3_key_prefix                 = "cloudtrail"
   include_global_service_events = false
+  # Adding an explicit depends_on appears to be the solution to
+  # InsufficientS3BucketPolicyException: https://github.com/hashicorp/terraform/issues/6388
+  depends_on = [aws_s3_bucket_policy.trail_populare]
 }
 
 resource "aws_s3_bucket" "trail_populare" {
