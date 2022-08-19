@@ -389,7 +389,6 @@ spec:
             - containerPort: 9090
       serviceAccountName: prometheus
 # TODO readiness and liveness probes
-# TODO volume mount for data
 ---
 apiVersion: v1
 kind: Service
