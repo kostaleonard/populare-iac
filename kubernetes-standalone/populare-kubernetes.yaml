@@ -17,6 +17,9 @@ spec:
       containers:
         - image: kostaleonard/populare:1.0.11
           name: populare
+          resources:
+            requests:
+              cpu: 100m
           ports:
             - containerPort: 80
               protocol: TCP
@@ -61,6 +64,9 @@ spec:
       containers:
       - image: kostaleonard/populare_db_proxy:0.0.11
         name: populare-db-proxy
+        resources:
+          requests:
+            cpu: 100m
         ports:
         - containerPort: 8000
           protocol: TCP
@@ -113,6 +119,9 @@ spec:
       containers:
         - image: kostaleonard/populare-reverse-proxy:0.0.2
           name: reverse-proxy
+          resources:
+            requests:
+              cpu: 100m
           ports:
             - containerPort: 80
               protocol: TCP
@@ -382,6 +391,9 @@ spec:
       containers:
         - image: prom/prometheus
           name: prometheus
+          resources:
+            requests:
+              cpu: 100m
           volumeMounts:
             - name: config
               mountPath: /etc/prometheus
