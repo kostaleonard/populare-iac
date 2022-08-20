@@ -10,7 +10,8 @@ module "eks" {
 
   node_security_group_additional_rules = {
     ingress_4443_from_control_plane = {
-      # This is important for Kubernetes internals such as the metrics server.
+      # This is important for Kubernetes internals such as the metrics server
+      # to reach the cluster nodes. See this comment: https://github.com/kubernetes-sigs/metrics-server/issues/1024#issuecomment-1129914389
       description                   = "Cluster API to Nodegroup for metrics server"
       protocol                      = "-1"
       from_port                     = 0
