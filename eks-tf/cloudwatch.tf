@@ -34,13 +34,16 @@ resource "aws_iam_role_policy" "populare_flow_log_policy" {
   name = "populare-flow-log-policy"
   role = aws_iam_role.populare_flow_log.id
 
+  # This policy differs slightly from the Terraform default implementation. In
+  # particular, we have removed "logs:CreateLogGroup" based on a comment here
+  # that seemed to work: https://github.com/hashicorp/terraform/issues/14750#issuecomment-303337513
+  # The reason that the change works has to do with a nuance in the AWS API.
   policy = <<EOF
 {
   "Version": "2012-10-17",
   "Statement": [
     {
       "Action": [
-        "logs:CreateLogGroup",
         "logs:CreateLogStream",
         "logs:PutLogEvents",
         "logs:DescribeLogGroups",

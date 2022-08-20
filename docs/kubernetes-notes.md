@@ -49,3 +49,13 @@ This is a shortcut that opens a browser window to the minikube node's IP
 address and the reverse-proxy service's nodeport. You could also get minikube's
 IP address with `minikube ip` and the nodeport with
 `kubectl get svc reverse-proxy`, then navigate to that IP/port in your browser.
+
+## Check node/pod CPU and memory usage
+
+Checking CPU and memory usage requires a [metrics server](https://github.com/kubernetes-sigs/metrics-server)
+to be deployed.
+
+```bash
+kubectl top node
+kubectl top pod
+```
