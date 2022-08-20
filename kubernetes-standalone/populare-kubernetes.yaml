@@ -20,6 +20,8 @@ spec:
           resources:
             requests:
               cpu: 100m
+            limits:
+              cpu: 200m
           ports:
             - containerPort: 80
               protocol: TCP
@@ -86,6 +88,8 @@ spec:
         resources:
           requests:
             cpu: 100m
+          limits:
+            cpu: 200m
         ports:
         - containerPort: 8000
           protocol: TCP
@@ -161,6 +165,8 @@ spec:
           resources:
             requests:
               cpu: 100m
+            limits:
+              cpu: 200m
           ports:
             - containerPort: 80
               protocol: TCP
@@ -449,9 +455,6 @@ spec:
       containers:
         - image: prom/prometheus
           name: prometheus
-          resources:
-            requests:
-              cpu: 100m
           volumeMounts:
             - name: config
               mountPath: /etc/prometheus

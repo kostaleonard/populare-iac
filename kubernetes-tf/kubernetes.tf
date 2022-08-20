@@ -56,9 +56,49 @@ resource "kubernetes_manifest" "populare-deployment" {
                 }
                 "periodSeconds" = 1
               }
+              "resources" = {
+                "requests" = {
+                  "cpu" = "100m"
+                }
+                "limits" = {
+                  "cpu" = "200m"
+                }
+              }
             },
           ]
         }
+      }
+    }
+  }
+}
+
+resource "kubernetes_manifest" "populare-horizontalpodautoscaler" {
+  manifest = {
+    "apiVersion" = "autoscaling/v2beta2"
+    "kind" = "HorizontalPodAutoscaler"
+    "metadata" = {
+      "name" = "populare"
+      "namespace" = "default"
+    }
+    "spec" = {
+      "maxReplicas" = 3
+      "metrics" = [
+        {
+          "resource" = {
+            "name" = "cpu"
+            "target" = {
+              "averageUtilization" = 70
+              "type" = "Utilization"
+            }
+          }
+          "type" = "Resource"
+        },
+      ]
+      "minReplicas" = 1
+      "scaleTargetRef" = {
+        "apiVersion" = "apps/v1"
+        "kind" = "Deployment"
+        "name" = "populare"
       }
     }
   }
@@ -134,6 +174,11 @@ resource "kubernetes_manifest" "populare-db-proxy-deployment" {
                 }
                 "periodSeconds" = 1
               }
+              "resources" = {
+                "requests" = {
+                  "cpu" = "100m"
+                }
+              }
               "volumeMounts" = [
                 {
                   "mountPath" = "/etc/populare-db-proxy/db-certs/"
@@ -152,6 +197,38 @@ resource "kubernetes_manifest" "populare-db-proxy-deployment" {
             },
           ]
         }
+      }
+    }
+  }
+}
+
+resource "kubernetes_manifest" "populare-db-proxy-horizontalpodautoscaler" {
+  manifest = {
+    "apiVersion" = "autoscaling/v2beta2"
+    "kind" = "HorizontalPodAutoscaler"
+    "metadata" = {
+      "name" = "populare-db-proxy"
+      "namespace" = "default"
+    }
+    "spec" = {
+      "maxReplicas" = 3
+      "metrics" = [
+        {
+          "resource" = {
+            "name" = "cpu"
+            "target" = {
+              "averageUtilization" = 70
+              "type" = "Utilization"
+            }
+          }
+          "type" = "Resource"
+        },
+      ]
+      "minReplicas" = 2
+      "scaleTargetRef" = {
+        "apiVersion" = "apps/v1"
+        "kind" = "Deployment"
+        "name" = "populare-db-proxy"
       }
     }
   }
@@ -227,9 +304,46 @@ resource "kubernetes_manifest" "reverse-proxy-deployment" {
                 }
                 "periodSeconds" = 1
               }
+              "resources" = {
+                "requests" = {
+                  "cpu" = "100m"
+                }
+              }
             },
           ]
         }
+      }
+    }
+  }
+}
+
+resource "kubernetes_manifest" "reverse-proxy-horizontalpodautoscaler" {
+  manifest = {
+    "apiVersion" = "autoscaling/v2beta2"
+    "kind" = "HorizontalPodAutoscaler"
+    "metadata" = {
+      "name" = "reverse-proxy"
+      "namespace" = "default"
+    }
+    "spec" = {
+      "maxReplicas" = 3
+      "metrics" = [
+        {
+          "resource" = {
+            "name" = "cpu"
+            "target" = {
+              "averageUtilization" = 70
+              "type" = "Utilization"
+            }
+          }
+          "type" = "Resource"
+        },
+      ]
+      "minReplicas" = 1
+      "scaleTargetRef" = {
+        "apiVersion" = "apps/v1"
+        "kind" = "Deployment"
+        "name" = "reverse-proxy"
       }
     }
   }
