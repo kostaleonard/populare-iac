@@ -3,7 +3,7 @@
     name: docker
     state: started
 
-- name: Get wireguard container status
+- name: Check wireguard container status
   # We could also use docker_container_info, but that requires Python 3.6 for
   # f-strings (and other dependencies, like cryptography) in the docker
   # package. But since we just want to make sure the wireguard server is
