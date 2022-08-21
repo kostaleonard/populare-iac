@@ -1,0 +1,6 @@
+plugin: amazon.aws.aws_ec2
+regions:
+  - us-east-2
+groups:
+  vpnservers: "tags['Name'] == 'bulwark'"
+  eksservers: "'aws:eks:cluster-name' in tags"
