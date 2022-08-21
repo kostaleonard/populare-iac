@@ -12,3 +12,5 @@ roles.
 with CloudTrail.
 * [prometheus-notes.md](prometheus-notes.md). Notes on Prometheus monitoring of
 deployed apps and services.
+* [andible-notes.md](ansible-notes.md). Notes on infrastructure task automation
+with Ansible.
