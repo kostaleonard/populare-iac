@@ -1,0 +1,11 @@
+- name: Get the Wireguard config for the specified user
+  hosts: vpnservers
+  remote_user: ubuntu
+  vars:
+    peer_name_with_default: "{{ peer_name | default('peer_leo_mac') }}"
+  tasks:
+    - name: Fetch Wireguard config
+      ansible.builtin.fetch:
+        src: "/etc/wireguard/{{ peer_name_with_default }}/{{ peer_name_with_default }}.conf"
+        dest: /tmp/
+        flat: yes
