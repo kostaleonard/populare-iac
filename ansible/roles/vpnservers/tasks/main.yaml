@@ -1,0 +1,4 @@
+- name: Check docker service status
+  service:
+    name: docker
+    state: started

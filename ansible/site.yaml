@@ -1,0 +1,5 @@
+- name: Configure vpnservers
+  hosts: vpnservers
+  remote_user: ubuntu
+  roles:
+    - vpnservers
