@@ -8,6 +8,16 @@ resource "kubernetes_secret" "db-certs" {
   }
 }
 
+resource "kubernetes_config_map" "populare-sns-notifier" {
+  metadata {
+    name = "populare-sns-notifier"
+  }
+
+  data = {
+    populare-sns-topic-arn = data.terraform_remote_state.populare_workspace_state.outputs.populare_user_updates_sns_topic_arn
+  }
+}
+
 resource "kubernetes_manifest" "populare-deployment" {
   manifest = {
     "apiVersion" = "apps/v1"
@@ -578,6 +588,36 @@ resource "kubernetes_manifest" "prometheus-service" {
       "selector" = {
         "app" = "prometheus"
       }
+    }
+  }
+}
+
+resource "kubernetes_manifest" "populare-sns-notifier-cronjob" {
+  manifest = {
+    "apiVersion" = "batch/v1"
+    "kind" = "CronJob"
+    "metadata" = {
+      "name" = "populare-sns-notifier"
+      "namespace" = "default"
+    }
+    "spec" = {
+      "jobTemplate" = {
+        "spec" = {
+          "backoffLimit" = 1
+          "template" = {
+            "spec" = {
+              "containers" = [
+                {
+                  "image" = "kostaleonard/populare_sns_notifier:0.0.1"
+                  "name" = "populare-sns-notifier"
+                },
+              ]
+              "restartPolicy" = "OnFailure"
+            }
+          }
+        }
+      }
+      "schedule" = "*/5 * * * *"
     }
   }
 }

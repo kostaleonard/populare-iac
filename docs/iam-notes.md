@@ -40,6 +40,10 @@ custom policies listed below.
 
 * AWSCloudTrail_FullAccess (AWS Managed Policy)
 
+### SQS
+
+* AmazonSQSFullAccess (AWS Managed Policy)
+
 ## IAM and Terraform
 
 ### Determining the minimum IAM permissions required for a plan
