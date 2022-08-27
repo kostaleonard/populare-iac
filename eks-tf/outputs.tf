@@ -39,3 +39,8 @@ output "bulwark_ip" {
   description = "The public ip for bulwark"
   value       = aws_instance.bulwark.public_ip
 }
+
+output "populare_user_updates_sns_topic_arn" {
+  description = "The ARN of the populare_user_updates SNS topic"
+  value = aws_sns_topic.populare_user_updates.arn
+}
