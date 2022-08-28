@@ -44,3 +44,8 @@ output "populare_user_updates_sns_topic_arn" {
   description = "The ARN of the populare_user_updates SNS topic"
   value = aws_sns_topic.populare_user_updates.arn
 }
+
+output "cluster_oidc_provider" {
+  description = "The EKS cluster OIDC identity provider (URL without leading https://)"
+  value = module.eks.oidc_provider
+}

@@ -639,13 +639,12 @@ resource "kubernetes_manifest" "populare-sns-notifier-cronjob" {
 }
 
 resource "kubernetes_manifest" "sns-publish-serviceaccount" {
-  # TODO remove my account ID
   manifest = {
     "apiVersion" = "v1"
     "kind" = "ServiceAccount"
     "metadata" = {
       "annotations" = {
-        "eks.amazonaws.com/role-arn" = "arn:aws:iam::890362829064:role/populare-sns-publish-role"
+        "eks.amazonaws.com/role-arn" = "arn:aws:iam::${data.aws_caller_identity.current.account_id}:role/populare-sns-publish-role"
       }
       "name" = "sns-publish"
       "namespace" = "default"
@@ -655,9 +654,7 @@ resource "kubernetes_manifest" "sns-publish-serviceaccount" {
 
 resource "aws_iam_role" "sns_publish" {
   name = "populare-sns-publish-role"
-
-  # TODO remove my account ID (not sensitive) from these configs so that we can deploy this under any account
-  # TODO OIDC provider string needs to be filled in based on EKS cluster data--oidc.eks.us-east-2.amazonaws.com/id/D8FD0DFACED7728610977CC0BCFECE16
+  
   assume_role_policy = <<EOF
 {
   "Version": "2012-10-17",
@@ -665,13 +662,13 @@ resource "aws_iam_role" "sns_publish" {
     {
       "Effect": "Allow",
       "Principal": {
-        "Federated": "arn:aws:iam::890362829064:oidc-provider/oidc.eks.us-east-2.amazonaws.com/id/D8FD0DFACED7728610977CC0BCFECE16"
+        "Federated": "arn:aws:iam::${data.aws_caller_identity.current.account_id}:oidc-provider/${data.terraform_remote_state.populare_workspace_state.outputs.cluster_oidc_provider}"
       },
       "Action": "sts:AssumeRoleWithWebIdentity",
       "Condition": {
         "StringEquals": {
-          "oidc.eks.us-east-2.amazonaws.com/id/D8FD0DFACED7728610977CC0BCFECE16:aud": "sts.amazonaws.com",
-          "oidc.eks.us-east-2.amazonaws.com/id/D8FD0DFACED7728610977CC0BCFECE16:sub": "system:serviceaccount:default:sns-publish"
+          "${data.terraform_remote_state.populare_workspace_state.outputs.cluster_oidc_provider}:aud": "sts.amazonaws.com",
+          "${data.terraform_remote_state.populare_workspace_state.outputs.cluster_oidc_provider}:sub": "system:serviceaccount:default:sns-publish"
         }
       }
     }

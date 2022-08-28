@@ -16,6 +16,7 @@ We deploy the following microservices.
 * [Populare web app](https://github.com/kostaleonard/populare)
 * [Populare database proxy](https://github.com/kostaleonard/populare-db-proxy)
 * [Populare reverse proxy](https://github.com/kostaleonard/populare-reverse-proxy)
+* [Populare SNS notifier](https://github.com/kostaleonard/populare-sns-notifier)
 * [Prometheus](https://github.com/prometheus/prometheus)
 * [Wireguard](https://github.com/linuxserver/docker-wireguard)
 
