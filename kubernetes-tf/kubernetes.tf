@@ -627,7 +627,6 @@ resource "kubernetes_manifest" "populare-sns-notifier-cronjob" {
                 },
               ]
               "restartPolicy" = "Never"
-              # TODO add notes on service account and roles for AWS API calls
               "serviceAccountName" = "sns-publish"
             }
           }
