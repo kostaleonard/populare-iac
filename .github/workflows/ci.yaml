@@ -1,5 +1,5 @@
 name: Run linting and tests
-on: [push, pull_request]
+on: [pull_request]
 jobs:
   build:
     runs-on: ubuntu-latest
@@ -7,6 +7,8 @@ jobs:
       - uses: actions/checkout@v2
       - name: Set up Terraform
         uses: hashicorp/setup-terraform@v2
+        with:
+          cli_config_credentials_token: ${{ secrets.TF_API_TOKEN }}
       - name: Lint and validate EKS plan
         run: |
           cd eks-tf
