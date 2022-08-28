@@ -11,7 +11,7 @@ terraform {
       version = "~> 4.16"
     }
     kubernetes = {
-      source = "hashicorp/kubernetes"
+      source  = "hashicorp/kubernetes"
       version = "2.12.1"
     }
   }
@@ -33,7 +33,7 @@ data "terraform_remote_state" "populare_workspace_state" {
   config = {
     organization = "kosta-mlops"
     workspaces = {
-      name    = "populare"
+      name = "populare"
     }
   }
 }

@@ -1,13 +1,13 @@
 resource "aws_instance" "bulwark" {
-  ami           = "ami-05803413c51f242b7" # us-east-2
-  instance_type = "t2.micro"
+  ami                         = "ami-05803413c51f242b7" # us-east-2
+  instance_type               = "t2.micro"
   associate_public_ip_address = true
   # SSH username for these EC2 instances is "ubuntu".
   key_name = "bulwark_ssh_key"
 
   user_data = templatefile("${path.module}/bulwark_bootstrap.tftpl", {})
 
-  subnet_id = module.vpc.public_subnets[0]
+  subnet_id              = module.vpc.public_subnets[0]
   vpc_security_group_ids = [aws_security_group.bulwark.id]
   tags = {
     Name = "bulwark"
@@ -15,7 +15,7 @@ resource "aws_instance" "bulwark" {
 }
 
 resource "aws_key_pair" "bulwark_ssh_key" {
-  key_name   = "bulwark_ssh_key"
+  key_name = "bulwark_ssh_key"
   # Leo's PC.
   public_key = "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIHTQwGhjFRWQccBre/mDCMo7rWmFlyVJ+i+1iFjUpF4t kostaleonard@gmail.com"
 }

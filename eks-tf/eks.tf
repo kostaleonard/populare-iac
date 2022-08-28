@@ -31,20 +31,20 @@ module "eks" {
     }
 
     ingress_icmp_from_bulwark = {
-      description      = "ICMP from bulwark"
-      protocol         = "icmp"
-      from_port        = -1
-      to_port          = -1
-      type             = "ingress"
+      description              = "ICMP from bulwark"
+      protocol                 = "icmp"
+      from_port                = -1
+      to_port                  = -1
+      type                     = "ingress"
       source_security_group_id = aws_security_group.bulwark.id
     }
 
     ingress_all_ports_from_bulwark = {
-      description      = "All incoming ports from bulwark"
-      protocol         = "-1"
-      from_port        = 0
-      to_port          = 0
-      type             = "ingress"
+      description              = "All incoming ports from bulwark"
+      protocol                 = "-1"
+      from_port                = 0
+      to_port                  = 0
+      type                     = "ingress"
       source_security_group_id = aws_security_group.bulwark.id
     }
   }

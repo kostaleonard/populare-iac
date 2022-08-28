@@ -6,12 +6,12 @@
 resource "kubernetes_manifest" "metrics-server-serviceaccount" {
   manifest = {
     "apiVersion" = "v1"
-    "kind" = "ServiceAccount"
+    "kind"       = "ServiceAccount"
     "metadata" = {
       "labels" = {
         "k8s-app" = "metrics-server"
       }
-      "name" = "metrics-server"
+      "name"      = "metrics-server"
       "namespace" = "kube-system"
     }
   }
@@ -20,13 +20,13 @@ resource "kubernetes_manifest" "metrics-server-serviceaccount" {
 resource "kubernetes_manifest" "aggregated-metrics-reader-clusterrole" {
   manifest = {
     "apiVersion" = "rbac.authorization.k8s.io/v1"
-    "kind" = "ClusterRole"
+    "kind"       = "ClusterRole"
     "metadata" = {
       "labels" = {
-        "k8s-app" = "metrics-server"
+        "k8s-app"                                      = "metrics-server"
         "rbac.authorization.k8s.io/aggregate-to-admin" = "true"
-        "rbac.authorization.k8s.io/aggregate-to-edit" = "true"
-        "rbac.authorization.k8s.io/aggregate-to-view" = "true"
+        "rbac.authorization.k8s.io/aggregate-to-edit"  = "true"
+        "rbac.authorization.k8s.io/aggregate-to-view"  = "true"
       }
       "name" = "system:aggregated-metrics-reader"
     }
@@ -52,7 +52,7 @@ resource "kubernetes_manifest" "aggregated-metrics-reader-clusterrole" {
 resource "kubernetes_manifest" "metrics-server-clusterrole" {
   manifest = {
     "apiVersion" = "rbac.authorization.k8s.io/v1"
-    "kind" = "ClusterRole"
+    "kind"       = "ClusterRole"
     "metadata" = {
       "labels" = {
         "k8s-app" = "metrics-server"
@@ -92,23 +92,23 @@ resource "kubernetes_manifest" "metrics-server-clusterrole" {
 resource "kubernetes_manifest" "metrics-server-auth-reading-rolebinding" {
   manifest = {
     "apiVersion" = "rbac.authorization.k8s.io/v1"
-    "kind" = "RoleBinding"
+    "kind"       = "RoleBinding"
     "metadata" = {
       "labels" = {
         "k8s-app" = "metrics-server"
       }
-      "name" = "metrics-server-auth-reader"
+      "name"      = "metrics-server-auth-reader"
       "namespace" = "kube-system"
     }
     "roleRef" = {
       "apiGroup" = "rbac.authorization.k8s.io"
-      "kind" = "Role"
-      "name" = "extension-apiserver-authentication-reader"
+      "kind"     = "Role"
+      "name"     = "extension-apiserver-authentication-reader"
     }
     "subjects" = [
       {
-        "kind" = "ServiceAccount"
-        "name" = "metrics-server"
+        "kind"      = "ServiceAccount"
+        "name"      = "metrics-server"
         "namespace" = "kube-system"
       },
     ]
@@ -118,7 +118,7 @@ resource "kubernetes_manifest" "metrics-server-auth-reading-rolebinding" {
 resource "kubernetes_manifest" "auth-delegator-clusterrolebinding" {
   manifest = {
     "apiVersion" = "rbac.authorization.k8s.io/v1"
-    "kind" = "ClusterRoleBinding"
+    "kind"       = "ClusterRoleBinding"
     "metadata" = {
       "labels" = {
         "k8s-app" = "metrics-server"
@@ -127,13 +127,13 @@ resource "kubernetes_manifest" "auth-delegator-clusterrolebinding" {
     }
     "roleRef" = {
       "apiGroup" = "rbac.authorization.k8s.io"
-      "kind" = "ClusterRole"
-      "name" = "system:auth-delegator"
+      "kind"     = "ClusterRole"
+      "name"     = "system:auth-delegator"
     }
     "subjects" = [
       {
-        "kind" = "ServiceAccount"
-        "name" = "metrics-server"
+        "kind"      = "ServiceAccount"
+        "name"      = "metrics-server"
         "namespace" = "kube-system"
       },
     ]
@@ -143,7 +143,7 @@ resource "kubernetes_manifest" "auth-delegator-clusterrolebinding" {
 resource "kubernetes_manifest" "metrics-server-clusterrolebinding" {
   manifest = {
     "apiVersion" = "rbac.authorization.k8s.io/v1"
-    "kind" = "ClusterRoleBinding"
+    "kind"       = "ClusterRoleBinding"
     "metadata" = {
       "labels" = {
         "k8s-app" = "metrics-server"
@@ -152,13 +152,13 @@ resource "kubernetes_manifest" "metrics-server-clusterrolebinding" {
     }
     "roleRef" = {
       "apiGroup" = "rbac.authorization.k8s.io"
-      "kind" = "ClusterRole"
-      "name" = "system:metrics-server"
+      "kind"     = "ClusterRole"
+      "name"     = "system:metrics-server"
     }
     "subjects" = [
       {
-        "kind" = "ServiceAccount"
-        "name" = "metrics-server"
+        "kind"      = "ServiceAccount"
+        "name"      = "metrics-server"
         "namespace" = "kube-system"
       },
     ]
@@ -168,20 +168,20 @@ resource "kubernetes_manifest" "metrics-server-clusterrolebinding" {
 resource "kubernetes_manifest" "metrics-server-service" {
   manifest = {
     "apiVersion" = "v1"
-    "kind" = "Service"
+    "kind"       = "Service"
     "metadata" = {
       "labels" = {
         "k8s-app" = "metrics-server"
       }
-      "name" = "metrics-server"
+      "name"      = "metrics-server"
       "namespace" = "kube-system"
     }
     "spec" = {
       "ports" = [
         {
-          "name" = "https"
-          "port" = 443
-          "protocol" = "TCP"
+          "name"       = "https"
+          "port"       = 443
+          "protocol"   = "TCP"
           "targetPort" = "https"
         },
       ]
@@ -195,12 +195,12 @@ resource "kubernetes_manifest" "metrics-server-service" {
 resource "kubernetes_manifest" "metrics-server-deployment" {
   manifest = {
     "apiVersion" = "apps/v1"
-    "kind" = "Deployment"
+    "kind"       = "Deployment"
     "metadata" = {
       "labels" = {
         "k8s-app" = "metrics-server"
       }
-      "name" = "metrics-server"
+      "name"      = "metrics-server"
       "namespace" = "kube-system"
     }
     "spec" = {
@@ -230,13 +230,13 @@ resource "kubernetes_manifest" "metrics-server-deployment" {
                 "--kubelet-use-node-status-port",
                 "--metric-resolution=15s",
               ]
-              "image" = "k8s.gcr.io/metrics-server/metrics-server:v0.6.1"
+              "image"           = "k8s.gcr.io/metrics-server/metrics-server:v0.6.1"
               "imagePullPolicy" = "IfNotPresent"
               "livenessProbe" = {
                 "failureThreshold" = 3
                 "httpGet" = {
-                  "path" = "/livez"
-                  "port" = "https"
+                  "path"   = "/livez"
+                  "port"   = "https"
                   "scheme" = "HTTPS"
                 }
                 "periodSeconds" = 10
@@ -245,36 +245,36 @@ resource "kubernetes_manifest" "metrics-server-deployment" {
               "ports" = [
                 {
                   "containerPort" = 4443
-                  "name" = "https"
-                  "protocol" = "TCP"
+                  "name"          = "https"
+                  "protocol"      = "TCP"
                 },
               ]
               "readinessProbe" = {
                 "failureThreshold" = 3
                 "httpGet" = {
-                  "path" = "/readyz"
-                  "port" = "https"
+                  "path"   = "/readyz"
+                  "port"   = "https"
                   "scheme" = "HTTPS"
                 }
                 "initialDelaySeconds" = 20
-                "periodSeconds" = 10
+                "periodSeconds"       = 10
               }
               "resources" = {
                 "requests" = {
-                  "cpu" = "100m"
+                  "cpu"    = "100m"
                   "memory" = "200Mi"
                 }
               }
               "securityContext" = {
                 "allowPrivilegeEscalation" = false
-                "readOnlyRootFilesystem" = true
-                "runAsNonRoot" = true
-                "runAsUser" = 1000
+                "readOnlyRootFilesystem"   = true
+                "runAsNonRoot"             = true
+                "runAsUser"                = 1000
               }
               "volumeMounts" = [
                 {
                   "mountPath" = "/tmp"
-                  "name" = "tmp-dir"
+                  "name"      = "tmp-dir"
                 },
               ]
             },
@@ -282,12 +282,12 @@ resource "kubernetes_manifest" "metrics-server-deployment" {
           "nodeSelector" = {
             "kubernetes.io/os" = "linux"
           }
-          "priorityClassName" = "system-cluster-critical"
+          "priorityClassName"  = "system-cluster-critical"
           "serviceAccountName" = "metrics-server"
           "volumes" = [
             {
               "emptyDir" = {}
-              "name" = "tmp-dir"
+              "name"     = "tmp-dir"
             },
           ]
         }
@@ -299,7 +299,7 @@ resource "kubernetes_manifest" "metrics-server-deployment" {
 resource "kubernetes_manifest" "metrics-server-apiservice" {
   manifest = {
     "apiVersion" = "apiregistration.k8s.io/v1"
-    "kind" = "APIService"
+    "kind"       = "APIService"
     "metadata" = {
       "labels" = {
         "k8s-app" = "metrics-server"
@@ -307,14 +307,14 @@ resource "kubernetes_manifest" "metrics-server-apiservice" {
       "name" = "v1beta1.metrics.k8s.io"
     }
     "spec" = {
-      "group" = "metrics.k8s.io"
-      "groupPriorityMinimum" = 100
+      "group"                 = "metrics.k8s.io"
+      "groupPriorityMinimum"  = 100
       "insecureSkipTLSVerify" = true
       "service" = {
-        "name" = "metrics-server"
+        "name"      = "metrics-server"
         "namespace" = "kube-system"
       }
-      "version" = "v1beta1"
+      "version"         = "v1beta1"
       "versionPriority" = 100
     }
   }
