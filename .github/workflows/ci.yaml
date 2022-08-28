@@ -20,4 +20,4 @@ jobs:
           cd kubernetes-tf
           terraform init
           terraform fmt -check
-          terraform plan
+          terraform validate
