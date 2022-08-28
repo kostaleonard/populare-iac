@@ -25,7 +25,7 @@ you need to attach multiple managed policies or even add user-defined policies
 
 See the [eksctl documentation](https://eksctl.io/usage/minimum-iam-policies/)
 for an explanation of the minimum required IAM policies and a definition of the
-custom policies listed below.
+EksAllAccess and IamLimitedAccess custom policies listed below.
 
 * AmazonEC2FullAccess (AWS Managed Policy)
 * AWSCloudFormationFullAccess (AWS Managed Policy)
@@ -81,42 +81,47 @@ used in the "Resource" section. AWS account IDs are not sensitive information
 
 ```json
 {
-    "Version": "2012-10-17",
-    "Statement": [
-        {
-            "Effect": "Allow",
-            "Action": [
-                "iam:CreateInstanceProfile",
-                "iam:DeleteInstanceProfile",
-                "iam:GetInstanceProfile",
-                "iam:RemoveRoleFromInstanceProfile",
-                "iam:GetRole",
-                "iam:CreateRole",
-                "iam:DeleteRole",
-                "iam:AttachRolePolicy",
-                "iam:PutRolePolicy",
-                "iam:ListInstanceProfiles",
-                "iam:AddRoleToInstanceProfile",
-                "iam:ListInstanceProfilesForRole",
-                "iam:PassRole",
-                "iam:DetachRolePolicy",
-                "iam:DeleteRolePolicy",
-                "iam:GetRolePolicy",
-                "iam:GetOpenIDConnectProvider",
-                "iam:CreateOpenIDConnectProvider",
-                "iam:DeleteOpenIDConnectProvider",
-                "iam:TagOpenIDConnectProvider",
-                "iam:ListAttachedRolePolicies",
-                "iam:TagRole",
-                "iam:GetPolicy",
-                "iam:CreatePolicy",
-                "iam:DeletePolicy",
-                "iam:ListPolicyVersions"
-            ],
-            "Resource": [
-                "arn:aws:iam::890362829064:role/populare-node-group-eks-node-group-*"
-            ]
-        }
-    ]
+  "Version": "2012-10-17",
+  "Statement": [
+    {
+      "Sid": "VisualEditor0",
+      "Effect": "Allow",
+      "Action": [
+        "iam:CreateInstanceProfile",
+        "iam:TagRole",
+        "iam:RemoveRoleFromInstanceProfile",
+        "iam:DeletePolicy",
+        "iam:CreateRole",
+        "iam:AttachRolePolicy",
+        "iam:PutRolePolicy",
+        "iam:AddRoleToInstanceProfile",
+        "iam:ListInstanceProfilesForRole",
+        "iam:PassRole",
+        "iam:DetachRolePolicy",
+        "iam:DeleteRolePolicy",
+        "iam:ListAttachedRolePolicies",
+        "iam:ListRolePolicies",
+        "iam:DeleteOpenIDConnectProvider",
+        "iam:DeleteInstanceProfile",
+        "iam:GetRole",
+        "iam:GetInstanceProfile",
+        "iam:GetPolicy",
+        "iam:DeleteRole",
+        "iam:ListInstanceProfiles",
+        "iam:CreateOpenIDConnectProvider",
+        "iam:CreatePolicy",
+        "iam:ListPolicyVersions",
+        "iam:GetOpenIDConnectProvider",
+        "iam:TagOpenIDConnectProvider",
+        "iam:GetRolePolicy"
+      ],
+      "Resource": [
+        "arn:aws:iam::890362829064:instance-profile/*",
+        "arn:aws:iam::890362829064:oidc-provider/*",
+        "arn:aws:iam::890362829064:role/populare-*",
+        "arn:aws:iam::890362829064:policy/*"
+      ]
+    }
+  ]
 }
 ```

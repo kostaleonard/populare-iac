@@ -610,9 +610,25 @@ resource "kubernetes_manifest" "populare-sns-notifier-cronjob" {
                 {
                   "image" = "kostaleonard/populare_sns_notifier:0.0.1"
                   "name" = "populare-sns-notifier"
+                  "volumeMounts" = [
+                    {
+                      "mountPath" = "/etc/populare-sns-notifier"
+                      "name" = "populare-sns-notifier"
+                    },
+                  ]
                 },
               ]
-              "restartPolicy" = "OnFailure"
+              "volumes" = [
+                {
+                  "configMap" = {
+                    "name" = "populare-sns-notifier"
+                  }
+                  "name" = "populare-sns-notifier"
+                },
+              ]
+              "restartPolicy" = "Never"
+              # TODO add notes on service account and roles for AWS API calls
+              "serviceAccountName" = "sns-publish"
             }
           }
         }
@@ -620,4 +636,69 @@ resource "kubernetes_manifest" "populare-sns-notifier-cronjob" {
       "schedule" = "*/5 * * * *"
     }
   }
+}
+
+resource "kubernetes_manifest" "sns-publish-serviceaccount" {
+  # TODO remove my account ID
+  manifest = {
+    "apiVersion" = "v1"
+    "kind" = "ServiceAccount"
+    "metadata" = {
+      "annotations" = {
+        "eks.amazonaws.com/role-arn" = "arn:aws:iam::890362829064:role/populare-sns-publish-role"
+      }
+      "name" = "sns-publish"
+      "namespace" = "default"
+    }
+  }
+}
+
+resource "aws_iam_role" "sns_publish" {
+  name = "populare-sns-publish-role"
+
+  # TODO remove my account ID (not sensitive) from these configs so that we can deploy this under any account
+  # TODO OIDC provider string needs to be filled in based on EKS cluster data--oidc.eks.us-east-2.amazonaws.com/id/D8FD0DFACED7728610977CC0BCFECE16
+  assume_role_policy = <<EOF
+{
+  "Version": "2012-10-17",
+  "Statement": [
+    {
+      "Effect": "Allow",
+      "Principal": {
+        "Federated": "arn:aws:iam::890362829064:oidc-provider/oidc.eks.us-east-2.amazonaws.com/id/D8FD0DFACED7728610977CC0BCFECE16"
+      },
+      "Action": "sts:AssumeRoleWithWebIdentity",
+      "Condition": {
+        "StringEquals": {
+          "oidc.eks.us-east-2.amazonaws.com/id/D8FD0DFACED7728610977CC0BCFECE16:aud": "sts.amazonaws.com",
+          "oidc.eks.us-east-2.amazonaws.com/id/D8FD0DFACED7728610977CC0BCFECE16:sub": "system:serviceaccount:default:sns-publish"
+        }
+      }
+    }
+  ]
+}
+EOF
+}
+
+resource "aws_iam_policy" "sns_publish" {
+  name        = "populare-sns-publish-policy"
+  description = "Allow SNS:Publish on all resources"
+
+  policy = jsonencode({
+    Version = "2012-10-17"
+    Statement = [
+      {
+        Action = [
+          "SNS:Publish",
+        ]
+        Effect   = "Allow"
+        Resource = "*"
+      },
+    ]
+  })
+}
+
+resource "aws_iam_role_policy_attachment" "sns_publish" {
+  role       = aws_iam_role.sns_publish.name
+  policy_arn = aws_iam_policy.sns_publish.arn
 }
