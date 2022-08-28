@@ -11,11 +11,11 @@ terraform {
       version = "~> 4.16"
     }
     random = {
-      source = "hashicorp/random"
+      source  = "hashicorp/random"
       version = "3.3.2"
     }
     template = {
-      source = "hashicorp/template"
+      source  = "hashicorp/template"
       version = "2.2.0"
     }
   }

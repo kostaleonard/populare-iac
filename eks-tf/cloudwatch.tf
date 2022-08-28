@@ -2,8 +2,8 @@ resource "aws_flow_log" "populare" {
   iam_role_arn    = aws_iam_role.populare_flow_log.arn
   log_destination = aws_cloudwatch_log_group.populare.arn
   # Log traffic within the VPC.
-  traffic_type    = "ALL"
-  vpc_id          = module.vpc.vpc_id
+  traffic_type = "ALL"
+  vpc_id       = module.vpc.vpc_id
 }
 
 resource "aws_cloudwatch_log_group" "populare" {

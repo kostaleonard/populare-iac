@@ -21,14 +21,14 @@ resource "kubernetes_config_map" "populare-sns-notifier" {
 resource "kubernetes_manifest" "populare-deployment" {
   manifest = {
     "apiVersion" = "apps/v1"
-    "kind" = "Deployment"
+    "kind"       = "Deployment"
     "metadata" = {
-      "name" = "populare"
+      "name"      = "populare"
       "namespace" = "default"
     }
     "spec" = {
       "minReadySeconds" = 10
-      "replicas" = 1
+      "replicas"        = 1
       "selector" = {
         "matchLabels" = {
           "app" = "populare"
@@ -56,7 +56,7 @@ resource "kubernetes_manifest" "populare-deployment" {
               "ports" = [
                 {
                   "containerPort" = 80
-                  "protocol" = "TCP"
+                  "protocol"      = "TCP"
                 },
               ]
               "readinessProbe" = {
@@ -85,9 +85,9 @@ resource "kubernetes_manifest" "populare-deployment" {
 resource "kubernetes_manifest" "populare-horizontalpodautoscaler" {
   manifest = {
     "apiVersion" = "autoscaling/v2beta2"
-    "kind" = "HorizontalPodAutoscaler"
+    "kind"       = "HorizontalPodAutoscaler"
     "metadata" = {
-      "name" = "populare"
+      "name"      = "populare"
       "namespace" = "default"
     }
     "spec" = {
@@ -98,7 +98,7 @@ resource "kubernetes_manifest" "populare-horizontalpodautoscaler" {
             "name" = "cpu"
             "target" = {
               "averageUtilization" = 70
-              "type" = "Utilization"
+              "type"               = "Utilization"
             }
           }
           "type" = "Resource"
@@ -107,8 +107,8 @@ resource "kubernetes_manifest" "populare-horizontalpodautoscaler" {
       "minReplicas" = 1
       "scaleTargetRef" = {
         "apiVersion" = "apps/v1"
-        "kind" = "Deployment"
-        "name" = "populare"
+        "kind"       = "Deployment"
+        "name"       = "populare"
       }
     }
   }
@@ -117,15 +117,15 @@ resource "kubernetes_manifest" "populare-horizontalpodautoscaler" {
 resource "kubernetes_manifest" "populare-service" {
   manifest = {
     "apiVersion" = "v1"
-    "kind" = "Service"
+    "kind"       = "Service"
     "metadata" = {
-      "name" = "populare"
+      "name"      = "populare"
       "namespace" = "default"
     }
     "spec" = {
       "ports" = [
         {
-          "port" = 80
+          "port"       = 80
           "targetPort" = 80
         },
       ]
@@ -139,14 +139,14 @@ resource "kubernetes_manifest" "populare-service" {
 resource "kubernetes_manifest" "populare-db-proxy-deployment" {
   manifest = {
     "apiVersion" = "apps/v1"
-    "kind" = "Deployment"
+    "kind"       = "Deployment"
     "metadata" = {
-      "name" = "populare-db-proxy"
+      "name"      = "populare-db-proxy"
       "namespace" = "default"
     }
     "spec" = {
       "minReadySeconds" = 10
-      "replicas" = 2
+      "replicas"        = 2
       "selector" = {
         "matchLabels" = {
           "app" = "populare-db-proxy"
@@ -174,7 +174,7 @@ resource "kubernetes_manifest" "populare-db-proxy-deployment" {
               "ports" = [
                 {
                   "containerPort" = 8000
-                  "protocol" = "TCP"
+                  "protocol"      = "TCP"
                 },
               ]
               "readinessProbe" = {
@@ -192,8 +192,8 @@ resource "kubernetes_manifest" "populare-db-proxy-deployment" {
               "volumeMounts" = [
                 {
                   "mountPath" = "/etc/populare-db-proxy/db-certs/"
-                  "name" = "db-certs"
-                  "readOnly" = true
+                  "name"      = "db-certs"
+                  "readOnly"  = true
                 },
               ]
             },
@@ -215,9 +215,9 @@ resource "kubernetes_manifest" "populare-db-proxy-deployment" {
 resource "kubernetes_manifest" "populare-db-proxy-horizontalpodautoscaler" {
   manifest = {
     "apiVersion" = "autoscaling/v2beta2"
-    "kind" = "HorizontalPodAutoscaler"
+    "kind"       = "HorizontalPodAutoscaler"
     "metadata" = {
-      "name" = "populare-db-proxy"
+      "name"      = "populare-db-proxy"
       "namespace" = "default"
     }
     "spec" = {
@@ -228,7 +228,7 @@ resource "kubernetes_manifest" "populare-db-proxy-horizontalpodautoscaler" {
             "name" = "cpu"
             "target" = {
               "averageUtilization" = 70
-              "type" = "Utilization"
+              "type"               = "Utilization"
             }
           }
           "type" = "Resource"
@@ -237,8 +237,8 @@ resource "kubernetes_manifest" "populare-db-proxy-horizontalpodautoscaler" {
       "minReplicas" = 2
       "scaleTargetRef" = {
         "apiVersion" = "apps/v1"
-        "kind" = "Deployment"
-        "name" = "populare-db-proxy"
+        "kind"       = "Deployment"
+        "name"       = "populare-db-proxy"
       }
     }
   }
@@ -247,15 +247,15 @@ resource "kubernetes_manifest" "populare-db-proxy-horizontalpodautoscaler" {
 resource "kubernetes_manifest" "populare-db-proxy-service" {
   manifest = {
     "apiVersion" = "v1"
-    "kind" = "Service"
+    "kind"       = "Service"
     "metadata" = {
-      "name" = "populare-db-proxy"
+      "name"      = "populare-db-proxy"
       "namespace" = "default"
     }
     "spec" = {
       "ports" = [
         {
-          "port" = 80
+          "port"       = 80
           "targetPort" = 8000
         },
       ]
@@ -269,14 +269,14 @@ resource "kubernetes_manifest" "populare-db-proxy-service" {
 resource "kubernetes_manifest" "reverse-proxy-deployment" {
   manifest = {
     "apiVersion" = "apps/v1"
-    "kind" = "Deployment"
+    "kind"       = "Deployment"
     "metadata" = {
-      "name" = "reverse-proxy"
+      "name"      = "reverse-proxy"
       "namespace" = "default"
     }
     "spec" = {
       "minReadySeconds" = 10
-      "replicas" = 1
+      "replicas"        = 1
       "selector" = {
         "matchLabels" = {
           "app" = "reverse-proxy"
@@ -304,7 +304,7 @@ resource "kubernetes_manifest" "reverse-proxy-deployment" {
               "ports" = [
                 {
                   "containerPort" = 80
-                  "protocol" = "TCP"
+                  "protocol"      = "TCP"
                 },
               ]
               "readinessProbe" = {
@@ -330,9 +330,9 @@ resource "kubernetes_manifest" "reverse-proxy-deployment" {
 resource "kubernetes_manifest" "reverse-proxy-horizontalpodautoscaler" {
   manifest = {
     "apiVersion" = "autoscaling/v2beta2"
-    "kind" = "HorizontalPodAutoscaler"
+    "kind"       = "HorizontalPodAutoscaler"
     "metadata" = {
-      "name" = "reverse-proxy"
+      "name"      = "reverse-proxy"
       "namespace" = "default"
     }
     "spec" = {
@@ -343,7 +343,7 @@ resource "kubernetes_manifest" "reverse-proxy-horizontalpodautoscaler" {
             "name" = "cpu"
             "target" = {
               "averageUtilization" = 70
-              "type" = "Utilization"
+              "type"               = "Utilization"
             }
           }
           "type" = "Resource"
@@ -352,8 +352,8 @@ resource "kubernetes_manifest" "reverse-proxy-horizontalpodautoscaler" {
       "minReplicas" = 1
       "scaleTargetRef" = {
         "apiVersion" = "apps/v1"
-        "kind" = "Deployment"
-        "name" = "reverse-proxy"
+        "kind"       = "Deployment"
+        "name"       = "reverse-proxy"
       }
     }
   }
@@ -362,15 +362,15 @@ resource "kubernetes_manifest" "reverse-proxy-horizontalpodautoscaler" {
 resource "kubernetes_manifest" "reverse-proxy-service" {
   manifest = {
     "apiVersion" = "v1"
-    "kind" = "Service"
+    "kind"       = "Service"
     "metadata" = {
-      "name" = "reverse-proxy"
+      "name"      = "reverse-proxy"
       "namespace" = "default"
     }
     "spec" = {
       "ports" = [
         {
-          "port" = 80
+          "port"       = 80
           "targetPort" = 80
         },
       ]
@@ -386,7 +386,7 @@ resource "kubernetes_manifest" "prometheus-clusterrole" {
   manifest = {
     "apiVersion" = "rbac.authorization.k8s.io/v1"
     "kind"       = "ClusterRole"
-    "metadata"   = {
+    "metadata" = {
       "name" = "prometheus"
     }
     "rules" = [
@@ -432,9 +432,9 @@ resource "kubernetes_manifest" "prometheus-clusterrole" {
 resource "kubernetes_manifest" "prometheus-service-account" {
   manifest = {
     "apiVersion" = "v1"
-    "kind" = "ServiceAccount"
+    "kind"       = "ServiceAccount"
     "metadata" = {
-      "name" = "prometheus"
+      "name"      = "prometheus"
       "namespace" = "default"
     }
   }
@@ -443,19 +443,19 @@ resource "kubernetes_manifest" "prometheus-service-account" {
 resource "kubernetes_manifest" "prometheus-clusterrole-binding" {
   manifest = {
     "apiVersion" = "rbac.authorization.k8s.io/v1"
-    "kind" = "ClusterRoleBinding"
+    "kind"       = "ClusterRoleBinding"
     "metadata" = {
       "name" = "prometheus"
     }
     "roleRef" = {
       "apiGroup" = "rbac.authorization.k8s.io"
-      "kind" = "ClusterRole"
-      "name" = "prometheus"
+      "kind"     = "ClusterRole"
+      "name"     = "prometheus"
     }
     "subjects" = [
       {
-        "kind" = "ServiceAccount"
-        "name" = "prometheus"
+        "kind"      = "ServiceAccount"
+        "name"      = "prometheus"
         "namespace" = "default"
       },
     ]
@@ -492,7 +492,7 @@ resource "kubernetes_manifest" "prometheus-configmap" {
     }
     "kind" = "ConfigMap"
     "metadata" = {
-      "name" = "prometheus"
+      "name"      = "prometheus"
       "namespace" = "default"
     }
   }
@@ -501,9 +501,9 @@ resource "kubernetes_manifest" "prometheus-configmap" {
 resource "kubernetes_manifest" "prometheus-deployment" {
   manifest = {
     "apiVersion" = "apps/v1"
-    "kind" = "Deployment"
+    "kind"       = "Deployment"
     "metadata" = {
-      "name" = "prometheus"
+      "name"      = "prometheus"
       "namespace" = "default"
     }
     "spec" = {
@@ -547,7 +547,7 @@ resource "kubernetes_manifest" "prometheus-deployment" {
               "volumeMounts" = [
                 {
                   "mountPath" = "/etc/prometheus"
-                  "name" = "config"
+                  "name"      = "config"
                 },
               ]
             },
@@ -570,18 +570,18 @@ resource "kubernetes_manifest" "prometheus-deployment" {
 resource "kubernetes_manifest" "prometheus-service" {
   manifest = {
     "apiVersion" = "v1"
-    "kind" = "Service"
+    "kind"       = "Service"
     "metadata" = {
       "labels" = {
         "app" = "prometheus"
       }
-      "name" = "prometheus"
+      "name"      = "prometheus"
       "namespace" = "default"
     }
     "spec" = {
       "ports" = [
         {
-          "port" = 80
+          "port"       = 80
           "targetPort" = 9090
         },
       ]
@@ -595,9 +595,9 @@ resource "kubernetes_manifest" "prometheus-service" {
 resource "kubernetes_manifest" "populare-sns-notifier-cronjob" {
   manifest = {
     "apiVersion" = "batch/v1"
-    "kind" = "CronJob"
+    "kind"       = "CronJob"
     "metadata" = {
-      "name" = "populare-sns-notifier"
+      "name"      = "populare-sns-notifier"
       "namespace" = "default"
     }
     "spec" = {
@@ -609,11 +609,11 @@ resource "kubernetes_manifest" "populare-sns-notifier-cronjob" {
               "containers" = [
                 {
                   "image" = "kostaleonard/populare_sns_notifier:0.0.2"
-                  "name" = "populare-sns-notifier"
+                  "name"  = "populare-sns-notifier"
                   "volumeMounts" = [
                     {
                       "mountPath" = "/etc/populare-sns-notifier"
-                      "name" = "populare-sns-notifier"
+                      "name"      = "populare-sns-notifier"
                     },
                   ]
                 },
@@ -626,7 +626,7 @@ resource "kubernetes_manifest" "populare-sns-notifier-cronjob" {
                   "name" = "populare-sns-notifier"
                 },
               ]
-              "restartPolicy" = "Never"
+              "restartPolicy"      = "Never"
               "serviceAccountName" = "sns-publish"
             }
           }
@@ -640,12 +640,12 @@ resource "kubernetes_manifest" "populare-sns-notifier-cronjob" {
 resource "kubernetes_manifest" "sns-publish-serviceaccount" {
   manifest = {
     "apiVersion" = "v1"
-    "kind" = "ServiceAccount"
+    "kind"       = "ServiceAccount"
     "metadata" = {
       "annotations" = {
         "eks.amazonaws.com/role-arn" = "arn:aws:iam::${data.aws_caller_identity.current.account_id}:role/populare-sns-publish-role"
       }
-      "name" = "sns-publish"
+      "name"      = "sns-publish"
       "namespace" = "default"
     }
   }
