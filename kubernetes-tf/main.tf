@@ -45,3 +45,5 @@ data "aws_eks_cluster" "default" {
 data "aws_eks_cluster_auth" "default" {
   name = data.terraform_remote_state.populare_workspace_state.outputs.cluster_name
 }
+
+data "aws_caller_identity" "current" {}

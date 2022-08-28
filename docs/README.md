@@ -14,3 +14,4 @@ with CloudTrail.
 deployed apps and services.
 * [ansible-notes.md](ansible-notes.md). Notes on infrastructure task automation
 with Ansible.
+* [sns-and-sqs-notes.md](sns-and-sqs-notes.md). Notes on SNS and SQS messaging.

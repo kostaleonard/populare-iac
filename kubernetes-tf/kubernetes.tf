@@ -8,6 +8,16 @@ resource "kubernetes_secret" "db-certs" {
   }
 }
 
+resource "kubernetes_config_map" "populare-sns-notifier" {
+  metadata {
+    name = "populare-sns-notifier"
+  }
+
+  data = {
+    populare-sns-topic-arn = data.terraform_remote_state.populare_workspace_state.outputs.populare_user_updates_sns_topic_arn
+  }
+}
+
 resource "kubernetes_manifest" "populare-deployment" {
   manifest = {
     "apiVersion" = "apps/v1"
@@ -580,4 +590,111 @@ resource "kubernetes_manifest" "prometheus-service" {
       }
     }
   }
+}
+
+resource "kubernetes_manifest" "populare-sns-notifier-cronjob" {
+  manifest = {
+    "apiVersion" = "batch/v1"
+    "kind" = "CronJob"
+    "metadata" = {
+      "name" = "populare-sns-notifier"
+      "namespace" = "default"
+    }
+    "spec" = {
+      "jobTemplate" = {
+        "spec" = {
+          "backoffLimit" = 1
+          "template" = {
+            "spec" = {
+              "containers" = [
+                {
+                  "image" = "kostaleonard/populare_sns_notifier:0.0.2"
+                  "name" = "populare-sns-notifier"
+                  "volumeMounts" = [
+                    {
+                      "mountPath" = "/etc/populare-sns-notifier"
+                      "name" = "populare-sns-notifier"
+                    },
+                  ]
+                },
+              ]
+              "volumes" = [
+                {
+                  "configMap" = {
+                    "name" = "populare-sns-notifier"
+                  }
+                  "name" = "populare-sns-notifier"
+                },
+              ]
+              "restartPolicy" = "Never"
+              "serviceAccountName" = "sns-publish"
+            }
+          }
+        }
+      }
+      "schedule" = "*/5 * * * *"
+    }
+  }
+}
+
+resource "kubernetes_manifest" "sns-publish-serviceaccount" {
+  manifest = {
+    "apiVersion" = "v1"
+    "kind" = "ServiceAccount"
+    "metadata" = {
+      "annotations" = {
+        "eks.amazonaws.com/role-arn" = "arn:aws:iam::${data.aws_caller_identity.current.account_id}:role/populare-sns-publish-role"
+      }
+      "name" = "sns-publish"
+      "namespace" = "default"
+    }
+  }
+}
+
+resource "aws_iam_role" "sns_publish" {
+  name = "populare-sns-publish-role"
+
+  assume_role_policy = <<EOF
+{
+  "Version": "2012-10-17",
+  "Statement": [
+    {
+      "Effect": "Allow",
+      "Principal": {
+        "Federated": "arn:aws:iam::${data.aws_caller_identity.current.account_id}:oidc-provider/${data.terraform_remote_state.populare_workspace_state.outputs.cluster_oidc_provider}"
+      },
+      "Action": "sts:AssumeRoleWithWebIdentity",
+      "Condition": {
+        "StringEquals": {
+          "${data.terraform_remote_state.populare_workspace_state.outputs.cluster_oidc_provider}:aud": "sts.amazonaws.com",
+          "${data.terraform_remote_state.populare_workspace_state.outputs.cluster_oidc_provider}:sub": "system:serviceaccount:default:sns-publish"
+        }
+      }
+    }
+  ]
+}
+EOF
+}
+
+resource "aws_iam_policy" "sns_publish" {
+  name        = "populare-sns-publish-policy"
+  description = "Allow SNS:Publish on all resources"
+
+  policy = jsonencode({
+    Version = "2012-10-17"
+    Statement = [
+      {
+        Action = [
+          "SNS:Publish",
+        ]
+        Effect   = "Allow"
+        Resource = "*"
+      },
+    ]
+  })
+}
+
+resource "aws_iam_role_policy_attachment" "sns_publish" {
+  role       = aws_iam_role.sns_publish.name
+  policy_arn = aws_iam_policy.sns_publish.arn
 }

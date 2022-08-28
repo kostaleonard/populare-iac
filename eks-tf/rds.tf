@@ -1,5 +1,7 @@
 resource "random_password" "db_password" {
   length = 16
+  # Only printable ASCII characters besides '/', '@', '"', ' ' may be used.
+  override_special = "!#$%&*()-_=+[]{}<>:?"
 }
 
 resource "aws_db_subnet_group" "populare" {

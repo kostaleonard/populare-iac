@@ -484,3 +484,19 @@ spec:
       targetPort: 9090
   selector:
     app: prometheus
+---
+apiVersion: batch/v1
+kind: CronJob
+metadata:
+  name: populare-sns-notifier
+spec:
+  schedule: "*/5 * * * *"
+  jobTemplate:
+    spec:
+      template:
+        spec:
+          containers:
+            - name: populare-sns-notifier
+              image: kostaleonard/populare_sns_notifier:0.0.1
+          restartPolicy: OnFailure
+      backoffLimit: 1
