@@ -608,7 +608,7 @@ resource "kubernetes_manifest" "populare-sns-notifier-cronjob" {
             "spec" = {
               "containers" = [
                 {
-                  "image" = "kostaleonard/populare_sns_notifier:0.0.1"
+                  "image" = "kostaleonard/populare_sns_notifier:0.0.2"
                   "name" = "populare-sns-notifier"
                   "volumeMounts" = [
                     {
@@ -654,7 +654,7 @@ resource "kubernetes_manifest" "sns-publish-serviceaccount" {
 
 resource "aws_iam_role" "sns_publish" {
   name = "populare-sns-publish-role"
-  
+
   assume_role_policy = <<EOF
 {
   "Version": "2012-10-17",
