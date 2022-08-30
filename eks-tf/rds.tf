@@ -27,6 +27,7 @@ resource "aws_db_instance" "populare" {
   parameter_group_name   = aws_db_parameter_group.populare.name
   publicly_accessible    = false
   skip_final_snapshot    = true
+  storage_encrypted      = true
 }
 
 resource "aws_db_parameter_group" "populare" {
