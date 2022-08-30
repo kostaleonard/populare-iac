@@ -212,6 +212,28 @@ spec:
   selector:
     app: reverse-proxy
 ---
+# TODO broken
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: reverse-proxy
+spec:
+  tls:
+  - hosts:
+    - "*.amazonaws.com"
+    secretName: tls-secret
+  rules:
+  - host: "*.amazonaws.com"
+    http:
+      paths:
+      - path: /
+        pathType: Prefix
+        backend:
+          service:
+            name: reverse-proxy
+            port:
+              number: 80
+---
 apiVersion: apps/v1
 kind: Deployment
 metadata:
