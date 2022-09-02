@@ -33,6 +33,16 @@ single endpoint for clients to access an app, and requests are load-balanced
 across EC2 instances that support the group.
 * EC2 instances and Auto Scaling groups can be used as targets for Application
 Load Balancers.
-* Application Load Balancer targets must be in public subnets.
 * You can create a cross-region RDS read replica to improve disaster recovers,
-scale operations closer to users, and facilitate migration.
+scale operations closer to users, and facilitate migration. Read replicas can
+be promoted to the primary database.
+
+## Lab 4: Configure high availability in your Amazon VPC
+
+* High availability is achieved by deploying resources in multiple availability
+zones. This includes EC2 nodes backed by Auto Scaling Groups, reader replicas
+for RDS instances, and multiple NAT Gateways for private subnets.
+* Use Auto Scaling Groups with multiple availability zones to provide high
+availability of apps running on those instances.
+* Auto Scaling Groups require launch templates to tell AWS how to create new
+instances.
