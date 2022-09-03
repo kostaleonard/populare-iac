@@ -46,3 +46,29 @@ for RDS instances, and multiple NAT Gateways for private subnets.
 availability of apps running on those instances.
 * Auto Scaling Groups require launch templates to tell AWS how to create new
 instances.
+
+## Lab 5: Build a serverless architecture
+
+* Events must often be propagated to subscribers in a strictly ordered manner.
+To achieve message ordering, deduplication, and encryption, we use SNS and SQS.
+* In this lab, we set up an SNS topic for events that occur in an S3 bucket,
+order those events with SQS, and then deliver to Lambda for processing.
+* You need to modify the SNS topic policy statement to allow AWS users and
+resources to publish messages.
+* Lambda functions need to use Roles that allow access to AWS resources.
+* Lambda functions can be triggered by arbitrary AWS events.
+* In S3, you can add lifecycle rules to expire, delete, and/or move data after
+a certain period of time.
+
+## Lab 6: Configure an Amazon CloudFront distribution with an Amazon S3 origin
+
+* CloudFront provides the ability to distribute content with low latency and
+high data transfer speeds. It is a managed content delivery network that
+provides users access to server content and AWS resources.
+* A CloudFront origin defines the location of the definitive, original version
+of the delivered content.
+* CloudFront behaviors specify which origin should be used for which requests,
+as well as other options like request handling and headers.
+* Origin Access Identity (OAI) requires users to access content through
+CloudFront URLs instead of directly through service (e.g., S3) URLs.
+* S3 buckets can be replicated across regions to improve disaster recovery.
