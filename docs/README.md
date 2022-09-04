@@ -15,3 +15,5 @@ deployed apps and services.
 * [ansible-notes.md](ansible-notes.md). Notes on infrastructure task automation
 with Ansible.
 * [sns-and-sqs-notes.md](sns-and-sqs-notes.md). Notes on SNS and SQS messaging.
+* [aws-training-notes.md](aws-training-notes.md). Notes on AWS "Architecting on
+AWS" training that are relevant to this project.
