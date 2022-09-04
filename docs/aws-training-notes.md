@@ -72,3 +72,8 @@ as well as other options like request handling and headers.
 * Origin Access Identity (OAI) requires users to access content through
 CloudFront URLs instead of directly through service (e.g., S3) URLs.
 * S3 buckets can be replicated across regions to improve disaster recovery.
+
+## Lab 7: Capstone--build an AWS multi-tier architecture
+
+* CloudFormation is Amazon's infrastructure as code solution. Infrastructure is
+deployed based on YAML definitions.
