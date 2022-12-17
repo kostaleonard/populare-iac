@@ -54,8 +54,8 @@ module "eks" {
       desired_capacity = 1
       max_capacity     = 3
       min_capacity     = 1
-      subnet_ids = module.vpc.private_subnets
-      instance_type = "m5.large"
+      subnet_ids       = module.vpc.private_subnets
+      instance_type    = "m5.large"
     }
   }
 
