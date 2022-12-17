@@ -1,0 +1,19 @@
+name: Destroy infrastructure
+on: [workflow_dispatch]
+jobs:
+  #destroy-kubernetes:
+    # TODO
+  destroy-infrastructure:
+    runs-on: ubuntu-latest
+    # TODO update needs to destroy-kubernetes
+    steps:
+      - uses: actions/checkout@v3
+      - name: Set up Terraform
+        uses: hashicorp/setup-terraform@v2
+        with:
+          cli_config_credentials_token: ${{ secrets.TF_API_TOKEN }}
+      - name: Deploy terraform infrastructure
+        run: |
+          cd eks-tf
+          terraform init
+          terraform destroy -auto-approve

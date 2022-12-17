@@ -43,12 +43,37 @@ jobs:
           base: ${{ github.event.repository.default_branch }}
           head: HEAD
           extra_args: --debug --only-verified
-    # TODO
-  #deploy-infrastructure:
-    # TODO
+  deploy-infrastructure:
+    # TODO only on main branch
+    runs-on: ubuntu-latest
+    needs: [terraform-validate, ansible-lint, trufflehog]
+    steps:
+      - uses: actions/checkout@v3
+      - name: Set up Terraform
+        uses: hashicorp/setup-terraform@v2
+        with:
+          cli_config_credentials_token: ${{ secrets.TF_API_TOKEN }}
+      - name: Deploy terraform infrastructure
+        run: |
+          cd eks-tf
+          terraform init
+          terraform apply -auto-approve
   #deploy-kubernetes:
     # TODO
   #destroy-kubernetes:
     # TODO
-  #destroy-infrastructure:
-    # TODO
+#  destroy-infrastructure:
+#    runs-on: ubuntu-latest
+#    # TODO update needs to destroy-kubernetes
+#    needs: [deploy-infrastructure]
+#    steps:
+#      - uses: actions/checkout@v3
+#      - name: Set up Terraform
+#        uses: hashicorp/setup-terraform@v2
+#        with:
+#          cli_config_credentials_token: ${{ secrets.TF_API_TOKEN }}
+#      - name: Deploy terraform infrastructure
+#        run: |
+#          cd eks-tf
+#          terraform init
+#          terraform destroy -auto-approve
