@@ -4,7 +4,7 @@ jobs:
   terraform-validate:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v2
+      - uses: actions/checkout@v3
       - name: Set up Terraform
         uses: hashicorp/setup-terraform@v2
         with:
@@ -24,12 +24,21 @@ jobs:
   ansible-lint:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v2
+      - uses: actions/checkout@v3
       - name: Run ansible-lint
         uses: ansible-community/ansible-lint-action@main
         with:
           path: "ansible/"
-  #trufflehog:
+  trufflehog:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+      - name: TruffleHog OSS
+        uses: trufflesecurity/trufflehog@main
+        with:
+          path: ./
+          extra_args: --debug --only-verified
     # TODO
   #deploy-infrastructure:
     # TODO
