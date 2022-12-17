@@ -1,12 +1,12 @@
 module "eks" {
   source  = "terraform-aws-modules/eks/aws"
-  version = "~> 18.0"
+  version = "~> 18.29"
 
   cluster_name    = var.cluster_name
   cluster_version = "1.22"
 
   vpc_id     = module.vpc.vpc_id
-  subnet_ids = concat(module.vpc.public_subnets, module.vpc.private_subnets)
+  subnet_ids = [module.vpc.public_subnets[0], module.vpc.public_subnets[1], module.vpc.private_subnets[0], module.vpc.private_subnets[1]]
 
   node_security_group_additional_rules = {
     ingress_4443_from_control_plane = {
@@ -51,11 +51,11 @@ module "eks" {
 
   eks_managed_node_groups = {
     populare-node-group = {
-      desired_capacity = 1
-      max_capacity     = 3
-      min_capacity     = 1
-      subnet_ids       = module.vpc.private_subnets
-      instance_type    = "m5.large"
+      desired_size  = 2
+      min_size      = 2
+      max_size      = 2
+      subnet_ids    = [module.vpc.private_subnets[0], module.vpc.private_subnets[1]]
+      instance_type = "m5.large"
     }
   }
 
