@@ -1,7 +1,6 @@
-name: Run linting and tests
-on: [pull_request]
+name: Deploy infrastructure
 jobs:
-  build:
+  terraform-validate:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2
@@ -21,3 +20,19 @@ jobs:
           terraform init
           terraform fmt -check
           terraform validate
+  ansible-lint:
+    - uses: actions/checkout@v2
+    - name: Run ansible-lint
+      uses: ansible-community/ansible-lint-action@main
+      with:
+        path: "ansible/"
+  #trufflehog:
+    # TODO
+  #deploy-infrastructure:
+    # TODO
+  #deploy-kubernetes:
+    # TODO
+  #destroy-kubernetes:
+    # TODO
+  #destroy-infrastructure:
+    # TODO
