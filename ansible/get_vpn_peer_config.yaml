@@ -8,4 +8,4 @@
       ansible.builtin.fetch:
         src: "/etc/wireguard/{{ peer_name_with_default }}/{{ peer_name_with_default }}.conf"
         dest: /tmp/
-        flat: yes
+        flat: true
