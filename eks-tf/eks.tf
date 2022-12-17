@@ -6,7 +6,7 @@ module "eks" {
   cluster_version = "1.22"
 
   vpc_id     = module.vpc.vpc_id
-  subnet_ids = module.vpc.public_subnets
+  subnet_ids = concat(module.vpc.public_subnets, module.vpc.private_subnets)
 
   node_security_group_additional_rules = {
     ingress_4443_from_control_plane = {
@@ -54,7 +54,7 @@ module "eks" {
       desired_capacity = 1
       max_capacity     = 3
       min_capacity     = 1
-
+      subnet_ids = module.vpc.private_subnets
       instance_type = "m5.large"
     }
   }
