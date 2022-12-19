@@ -5,9 +5,10 @@ This repository defines the infrastructure for the Populare app. Running
 other services in AWS, then deploys all Populare microservices into Kubernetes
 (EKS). Once deployed, users can access the web app from the load balancer URL;
 administrators can access internal services through the VPN. Running
-`terraform destroy` cleans up all infrastructure. Below is the system diagram.
+`terraform destroy` cleans up all infrastructure. Below is the infrastructure
+diagram.
 
-![Populare system diagram](docs/populare_system_diagram.png)
+![Populare infrastructure diagram](docs/populare_infrastructure.png)
 
 ## Microservices
 
@@ -19,6 +20,10 @@ We deploy the following microservices.
 * [Populare SNS notifier](https://github.com/kostaleonard/populare-sns-notifier)
 * [Prometheus](https://github.com/prometheus/prometheus)
 * [Wireguard](https://github.com/linuxserver/docker-wireguard)
+
+The figure below shows how the microservices interact.
+
+![Populare microservices](docs/populare_microservices.png)
 
 ## Deployment options
 
